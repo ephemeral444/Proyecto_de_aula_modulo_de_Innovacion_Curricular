@@ -4,4 +4,4 @@
 *.vsidx
 *.suo
 *.user
-slnx.sqlite*
+slnx.sqlite*.vs/
