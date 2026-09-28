@@ -14,6 +14,7 @@
             --primary-hover: #0284c7;
             --danger: #ef4444;
             --warning: #f59e0b;
+            --warning-hover: #d97706;
             --success: #22c55e;
             --border: #334155;
         }
@@ -105,7 +106,7 @@
         button {
             cursor: pointer;
             font-weight: 600;
-            transition: background-color 0.2s;
+            transition: background-color 0.2s, color 0.2s;
         }
 
             button.btn-primary {
@@ -116,6 +117,17 @@
 
                 button.btn-primary:hover {
                     background-color: var(--primary-hover);
+                }
+
+            button.btn-warning {
+                background-color: transparent;
+                border: 1px solid var(--warning);
+                color: var(--warning);
+            }
+
+                button.btn-warning:hover {
+                    background-color: var(--warning);
+                    color: #0f172a;
                 }
 
             button.btn-danger {
@@ -172,6 +184,11 @@
             text-align: center;
             padding: 3rem 1rem;
             color: var(--muted-text);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
         }
 
         /* Modal */
@@ -276,7 +293,7 @@
         <div class="modal">
             <div class="modal-header">
                 <h3 id="modal-titulo">Nuevo Registro</h3>
-                <button id="btn-cerrar-modal" style="background: none; border: none; font-size: 1.2rem; cursor: pointer;">✕</button>
+                <button id="btn-cerrar-modal" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--text-color);">✕</button>
             </div>
             <form id="form-registro" class="modal-body"></form>
             <div class="modal-footer">
@@ -287,276 +304,313 @@
     </div>
 
     <script>
-    const API_BASE_URL = 'http://localhost:8124/api';
+const API_BASE_URL = 'http://localhost:8124/api';
+            let esModificacion = false;
+            let idEditando = null;
 
-    const ESQUEMAS = {
-      'universidades': {
-        singular: 'Universidad',
-        idField: 'id',
-        idType: 'number',
-        campos: [
-          { name: 'id', label: 'ID', type: 'number', required: true },
-          { name: 'nombre', label: 'Nombre', type: 'text', required: true },
-          { name: 'tipo', label: 'Tipo', type: 'text', required: true },
-          { name: 'ciudad', label: 'Ciudad', type: 'text', required: true }
-        ]
-      },
-      'areas-conocimiento': {
-        singular: 'Área de Conocimiento',
-        idField: 'id',
-        idType: 'number',
-        campos: [
-          { name: 'id', label: 'ID', type: 'number', required: true },
-          { name: 'granArea', label: 'Gran Área', type: 'text', required: true },
-          { name: 'area', label: 'Área', type: 'text', required: true },
-          { name: 'disciplina', label: 'Disciplina', type: 'text', required: true }
-        ]
-      },
-      'aspectos-normativos': {
-        singular: 'Aspecto Normativo',
-        idField: 'id',
-        idType: 'number',
-        campos: [
-          { name: 'id', label: 'ID', type: 'number', required: true },
-          { name: 'tipo', label: 'Tipo', type: 'text', required: true },
-          { name: 'descripcion', label: 'Descripción', type: 'text', required: true },
-          { name: 'fuente', label: 'Fuente', type: 'text', required: true }
-        ]
-      },
-      'practicas-estrategias': {
-        singular: 'Práctica / Estrategia',
-        idField: 'id',
-        idType: 'number',
-        campos: [
-          { name: 'id', label: 'ID', type: 'number', required: true },
-          { name: 'tipo', label: 'Tipo', type: 'text', required: true },
-          { name: 'nombre', label: 'Nombre', type: 'text', required: true },
-          { name: 'descripcion', label: 'Descripción', type: 'text', required: true }
-        ]
-      },
-      'enfoques': {
-        singular: 'Enfoque',
-        idField: 'id',
-        idType: 'number',
-        campos: [
-          { name: 'id', label: 'ID', type: 'number', required: true },
-          { name: 'nombre', label: 'Nombre', type: 'text', required: true },
-          { name: 'descripcion', label: 'Descripción', type: 'text', required: true }
-        ]
-      },
-      'caracteristicas-innovacion': {
-        singular: 'Car. Innovación',
-        idField: 'id',
-        idType: 'number',
-        campos: [
-          { name: 'id', label: 'ID', type: 'number', required: true },
-          { name: 'nombre', label: 'Nombre', type: 'text', required: true },
-          { name: 'descripcion', label: 'Descripción', type: 'text', required: true },
-          { name: 'tipo', label: 'Tipo', type: 'text', required: true }
-        ]
-      },
-      'aliados': {
-        singular: 'Aliado',
-        idField: 'nit',
-        idType: 'text',
-        campos: [
-          { name: 'nit', label: 'NIT', type: 'text', required: true },
-          { name: 'razonSocial', label: 'Razón Social', type: 'text', required: true },
-          { name: 'contacto', label: 'Contacto', type: 'text', required: true },
-          { name: 'ciudad', label: 'Ciudad', type: 'text', required: true }
-        ]
-      }
-    };
+            const ESQUEMAS = {
+              'universidades': {
+                singular: 'Universidad',
+                idField: 'id',
+                idType: 'number',
+                campos: [
+                  { name: 'id', label: 'ID', type: 'number', required: true, editable: false },
+                  { name: 'nombre', label: 'Nombre', type: 'text', required: true },
+                  { name: 'tipo', label: 'Tipo', type: 'text', required: true },
+                  { name: 'ciudad', label: 'Ciudad', type: 'text', required: true }
+                ]
+              },
+              'areas-conocimiento': {
+                singular: 'Área de Conocimiento',
+                idField: 'id',
+                idType: 'number',
+                campos: [
+                  { name: 'id', label: 'ID', type: 'number', required: true, editable: false },
+                  { name: 'granArea', label: 'Gran Área', type: 'text', required: true },
+                  { name: 'area', label: 'Área', type: 'text', required: true },
+                  { name: 'disciplina', label: 'Disciplina', type: 'text', required: true }
+                ]
+              },
+              'aspectos-normativos': {
+                singular: 'Aspecto Normativo',
+                idField: 'id',
+                idType: 'number',
+                campos: [
+                  { name: 'id', label: 'ID', type: 'number', required: true, editable: false },
+                  { name: 'tipo', label: 'Tipo', type: 'text', required: true },
+                  { name: 'descripcion', label: 'Descripción', type: 'text', required: true },
+                  { name: 'fuente', label: 'Fuente', type: 'text', required: true }
+                ]
+              },
+              'practicas-estrategias': {
+                singular: 'Práctica / Estrategia',
+                idField: 'id',
+                idType: 'number',
+                campos: [
+                  { name: 'id', label: 'ID', type: 'number', required: true, editable: false },
+                  { name: 'tipo', label: 'Tipo', type: 'text', required: true },
+                  { name: 'nombre', label: 'Nombre', type: 'text', required: true },
+                  { name: 'descripcion', label: 'Descripción', type: 'text', required: true }
+                ]
+              },
+              'enfoques': {
+                singular: 'Enfoque',
+                idField: 'id',
+                idType: 'number',
+                campos: [
+                  { name: 'id', label: 'ID', type: 'number', required: true, editable: false },
+                  { name: 'nombre', label: 'Nombre', type: 'text', required: true },
+                  { name: 'descripcion', label: 'Descripción', type: 'text', required: true }
+                ]
+              },
+              'caracteristicas-innovacion': {
+                singular: 'Car. Innovación',
+                idField: 'id',
+                idType: 'number',
+                campos: [
+                  { name: 'id', label: 'ID', type: 'number', required: true, editable: false },
+                  { name: 'nombre', label: 'Nombre', type: 'text', required: true },
+                  { name: 'descripcion', label: 'Descripción', type: 'text', required: true },
+                  { name: 'tipo', label: 'Tipo', type: 'text', required: true }
+                ]
+              },
+              'aliados': {
+                singular: 'Aliado',
+                idField: 'nit',
+                idType: 'text',
+                campos: [
+                  { name: 'nit', label: 'NIT', type: 'text', required: true, editable: false },
+                  { name: 'razonSocial', label: 'Razón Social', type: 'text', required: true },
+                  { name: 'contacto', label: 'Contacto', type: 'text', required: true },
+                  { name: 'ciudad', label: 'Ciudad', type: 'text', required: true }
+                ]
+              }
+            };
 
-    const selectorRecurso = document.getElementById('selector-recurso');
-    const btnRecargar = document.getElementById('btn-recargar');
-    const btnNuevo = document.getElementById('btn-nuevo');
-    const alertaServicio = document.getElementById('alerta-servicio');
-    const tablaEncabezado = document.getElementById('tabla-encabezado');
-    const tablaCuerpo = document.getElementById('tabla-cuerpo');
-    const estadoVacio = document.getElementById('estado-vacio');
-    const modalFormulario = document.getElementById('modal-formulario');
-    const modalTitulo = document.getElementById('modal-titulo');
-    const formRegistro = document.getElementById('form-registro');
-    const btnCerrarModal = document.getElementById('btn-cerrar-modal');
-    const btnCancelar = document.getElementById('btn-cancelar');
+            const selectorRecurso = document.getElementById('selector-recurso');
+            const btnRecargar = document.getElementById('btn-recargar');
+            const btnNuevo = document.getElementById('btn-nuevo');
+            const alertaServicio = document.getElementById('alerta-servicio');
+            const tablaEncabezado = document.getElementById('tabla-encabezado');
+            const tablaCuerpo = document.getElementById('tabla-cuerpo');
+            const estadoVacio = document.getElementById('estado-vacio');
+            const modalFormulario = document.getElementById('modal-formulario');
+            const modalTitulo = document.getElementById('modal-titulo');
+            const formRegistro = document.getElementById('form-registro');
+            const btnCerrarModal = document.getElementById('btn-cerrar-modal');
+            const btnCancelar = document.getElementById('btn-cancelar');
 
-    function mostrarAlerta(mensaje, esError = false) {
-      alertaServicio.textContent = mensaje;
-      alertaServicio.className = `alert ${esError ? 'alert-error' : 'alert-warning'}`;
-      alertaServicio.style.display = 'block';
-    }
+            function mostrarAlerta(mensaje, esError = false) {
+              alertaServicio.textContent = mensaje;
+              alertaServicio.className = `alert ${esError ? 'alert-error' : 'alert-warning'}`;
+              alertaServicio.style.display = 'block';
+            }
 
-    function ocultarAlerta() {
-      alertaServicio.style.display = 'none';
-    }
+            function ocultarAlerta() {
+              alertaServicio.style.display = 'none';
+            }
 
-    async function cargarDatos() {
-      ocultarAlerta();
-      const recurso = selectorRecurso.value;
-      const esquema = ESQUEMAS[recurso];
+            async function cargarDatos() {
+              ocultarAlerta();
+              const recurso = selectorRecurso.value;
+              const esquema = ESQUEMAS[recurso];
 
-      try {
-        const respuesta = await fetch(`${API_BASE_URL}/${recurso}`);
+              try {
+                const respuesta = await fetch(`${API_BASE_URL}/${recurso}`);
 
-        if (respuesta.status === 204) {
-          renderizarTabla(esquema, []);
-          return;
-        }
+                if (respuesta.status === 204) {
+                  renderizarTabla(esquema, []);
+                  return;
+                }
 
-        if (!respuesta.ok) {
-          throw new Error(`El servidor respondió con código HTTP ${respuesta.status}`);
-        }
+                if (!respuesta.ok) {
+                  throw new Error(`El servidor respondió con código HTTP ${respuesta.status}`);
+                }
 
-        const data = await respuesta.json();
-        const lista = data.datos || data;
-        renderizarTabla(esquema, lista);
-      } catch (error) {
-        mostrarAlerta(`Aviso: No se pudo establecer conexión con el backend en ${API_BASE_URL}. Asegúrese de que la API esté encendida.`, true);
-        renderizarTabla(esquema, []);
-      }
-    }
+                const data = await respuesta.json();
+                const lista = data.datos || data;
+                renderizarTabla(esquema, lista);
+              } catch (error) {
+                mostrarAlerta(`Aviso: No se pudo establecer conexión con el backend en ${API_BASE_URL}. Asegúrese de que la API esté encendida.`, true);
+                renderizarTabla(esquema, []);
+              }
+            }
 
-    function renderizarTabla(esquema, registros) {
-      tablaEncabezado.innerHTML = '';
-      tablaCuerpo.innerHTML = '';
+            function renderizarTabla(esquema, registros) {
+              tablaEncabezado.innerHTML = '';
+              tablaCuerpo.innerHTML = '';
 
-      const trEncabezado = document.createElement('tr');
-      esquema.campos.forEach(c => {
-        const th = document.createElement('th');
-        th.textContent = c.label;
-        trEncabezado.appendChild(th);
-      });
-      const thEstado = document.createElement('th');
-      thEstado.textContent = 'Estado';
-      trEncabezado.appendChild(thEstado);
+              const trEncabezado = document.createElement('tr');
+              esquema.campos.forEach(c => {
+                const th = document.createElement('th');
+                th.textContent = c.label;
+                trEncabezado.appendChild(th);
+              });
+              const thEstado = document.createElement('th');
+              thEstado.textContent = 'Estado';
+              trEncabezado.appendChild(thEstado);
 
-      const thAcciones = document.createElement('th');
-      thAcciones.textContent = 'Acciones';
-      trEncabezado.appendChild(thAcciones);
-      tablaEncabezado.appendChild(trEncabezado);
+              const thAcciones = document.createElement('th');
+              thAcciones.textContent = 'Acciones';
+              trEncabezado.appendChild(thAcciones);
+              tablaEncabezado.appendChild(trEncabezado);
 
-      if (!registros || registros.length === 0) {
-        estadoVacio.style.display = 'block';
-        return;
-      }
-      estadoVacio.style.display = 'none';
+              if (!registros || registros.length === 0) {
+                estadoVacio.style.display = 'block';
+                return;
+              }
+              estadoVacio.style.display = 'none';
 
-      registros.forEach(item => {
-        const tr = document.createElement('tr');
-        esquema.campos.forEach(c => {
-          const td = document.createElement('td');
-          // Normalizar propiedades según PascalCase o camelCase
-          const val = item[c.name] ?? item[c.name.charAt(0).toUpperCase() + c.name.slice(1)];
-          td.textContent = val !== undefined && val !== null ? val : '';
-          tr.appendChild(td);
-        });
+              registros.forEach(item => {
+                const tr = document.createElement('tr');
+                esquema.campos.forEach(c => {
+                  const td = document.createElement('td');
+                  const val = item[c.name] ?? item[c.name.charAt(0).toUpperCase() + c.name.slice(1)];
+                  td.textContent = val !== undefined && val !== null ? val : '';
+                  tr.appendChild(td);
+                });
 
-        const tdEstado = document.createElement('td');
-        const badge = document.createElement('span');
-        badge.className = 'status-badge';
-        badge.textContent = 'Activo';
-        tdEstado.appendChild(badge);
-        tr.appendChild(tdEstado);
+                const tdEstado = document.createElement('td');
+                const badge = document.createElement('span');
+                badge.className = 'status-badge';
+                badge.textContent = 'Activo';
+                tdEstado.appendChild(badge);
+                tr.appendChild(tdEstado);
 
-        const tdAcciones = document.createElement('td');
-        const btnEliminar = document.createElement('button');
-        btnEliminar.className = 'btn-danger';
-        btnEliminar.textContent = 'Inactivar';
-        const idVal = item[esquema.idField] ?? item[esquema.idField.charAt(0).toUpperCase() + esquema.idField.slice(1)];
-        btnEliminar.onclick = () => inactivarRegistro(selectorRecurso.value, idVal);
-        tdAcciones.appendChild(btnEliminar);
-        tr.appendChild(tdAcciones);
+                const tdAcciones = document.createElement('td');
+                tdAcciones.className = 'action-buttons';
 
-        tablaCuerpo.appendChild(tr);
-      });
-    }
+                const idVal = item[esquema.idField] ?? item[esquema.idField.charAt(0).toUpperCase() + esquema.idField.slice(1)];
 
-    async function inactivarRegistro(recurso, id) {
-      if (!confirm(`¿Está seguro de inactivar el registro con identificador ${id}?`)) return;
+                // BOTÓN MODIFICAR
+                const btnEditar = document.createElement('button');
+                btnEditar.className = 'btn-warning';
+                btnEditar.textContent = 'Modificar';
+                btnEditar.onclick = () => abrirModalFormulario(item, true);
 
-      try {
-        const respuesta = await fetch(`${API_BASE_URL}/${recurso}/${id}`, {
-          method: 'DELETE'
-        });
+                // BOTÓN INACTIVAR / ELIMINAR
+                const btnEliminar = document.createElement('button');
+                btnEliminar.className = 'btn-danger';
+                btnEliminar.textContent = 'Inactivar';
+                btnEliminar.onclick = () => inactivarRegistro(selectorRecurso.value, idVal);
 
-        if (!respuesta.ok) {
-          throw new Error('Error al procesar el borrado lógico.');
-        }
+                tdAcciones.appendChild(btnEditar);
+                tdAcciones.appendChild(btnEliminar);
+                tr.appendChild(tdAcciones);
 
-        await cargarDatos();
-      } catch (error) {
-        mostrarAlerta(`No se pudo inactivar el registro: ${error.message}`, true);
-      }
-    }
+                tablaCuerpo.appendChild(tr);
+              });
+            }
 
-    function abrirModalNuevo() {
-      const recurso = selectorRecurso.value;
-      const esquema = ESQUEMAS[recurso];
-      modalTitulo.textContent = `Nuevo — ${esquema.singular}`;
-      formRegistro.innerHTML = '';
+            async function inactivarRegistro(recurso, id) {
+              if (!confirm(`¿Está seguro de inactivar el registro con identificador ${id}?`)) return;
 
-      esquema.campos.forEach(c => {
-        const div = document.createElement('div');
-        div.className = 'form-group';
-        const label = document.createElement('label');
-        label.textContent = c.label;
-        const input = document.createElement('input');
-        input.type = c.type;
-        input.name = c.name;
-        input.required = c.required;
-        div.appendChild(label);
-        div.appendChild(input);
-        formRegistro.appendChild(div);
-      });
+              try {
+                const respuesta = await fetch(`${API_BASE_URL}/${recurso}/${id}`, {
+                  method: 'DELETE'
+                });
 
-      modalFormulario.style.display = 'flex';
-    }
+                if (!respuesta.ok) {
+                  throw new Error('Error al procesar el borrado lógico.');
+                }
 
-    function cerrarModal() {
-      modalFormulario.style.display = 'none';
-      formRegistro.reset();
-    }
+                await cargarDatos();
+              } catch (error) {
+                mostrarAlerta(`No se pudo inactivar el registro: ${error.message}`, true);
+              }
+            }
 
-    formRegistro.onsubmit = async (e) => {
-      e.preventDefault();
-      const recurso = selectorRecurso.value;
-      const esquema = ESQUEMAS[recurso];
-      const formData = new FormData(formRegistro);
-      const payload = {};
+            function abrirModalFormulario(datos = null, editar = false) {
+              esModificacion = editar;
+              const recurso = selectorRecurso.value;
+              const esquema = ESQUEMAS[recurso];
 
-      esquema.campos.forEach(c => {
-        const valor = formData.get(c.name);
-        payload[c.name] = c.type === 'number' ? parseInt(valor, 10) : valor;
-      });
+              modalTitulo.textContent = editar ? `Modificar — ${esquema.singular}` : `Nuevo — ${esquema.singular}`;
+              formRegistro.innerHTML = '';
 
-      try {
-        const respuesta = await fetch(`${API_BASE_URL}/${recurso}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
+              const idCampoNombre = esquema.idField;
+              idEditando = datos ? (datos[idCampoNombre] ?? datos[idCampoNombre.charAt(0).toUpperCase() + idCampoNombre.slice(1)]) : null;
 
-        if (!respuesta.ok) {
-          const detalle = await respuesta.text();
-          throw new Error(detalle || `Código HTTP ${respuesta.status}`);
-        }
+              esquema.campos.forEach(c => {
+                const div = document.createElement('div');
+                div.className = 'form-group';
+                const label = document.createElement('label');
+                label.textContent = c.label;
+                const input = document.createElement('input');
+                input.type = c.type;
+                input.name = c.name;
+                input.required = c.required;
 
-        cerrarModal();
-        await cargarDatos();
-      } catch (error) {
-        alert(`Error al registrar recurso: ${error.message}`);
-      }
-    };
+                if (datos) {
+                  const val = datos[c.name] ?? datos[c.name.charAt(0).toUpperCase() + c.name.slice(1)];
+                  input.value = val !== undefined && val !== null ? val : '';
+                }
 
-    selectorRecurso.onchange = cargarDatos;
-    btnRecargar.onclick = cargarDatos;
-    btnNuevo.onclick = abrirModalNuevo;
-    btnCerrarModal.onclick = cerrarModal;
-    btnCancelar.onclick = cerrarModal;
+                // Si es modificacion y es la clave primaria, deshabilita la edición del ID
+                if (editar && c.name === esquema.idField) {
+                  input.readOnly = true;
+                  input.style.opacity = '0.6';
+                }
 
-    // Carga inicial
-    cargarDatos();
-    </script>
+                div.appendChild(label);
+                div.appendChild(input);
+                formRegistro.appendChild(div);
+              });
+
+              modalFormulario.style.display = 'flex';
+            }
+
+            function cerrarModal() {
+              modalFormulario.style.display = 'none';
+              formRegistro.reset();
+              esModificacion = false;
+              idEditando = null;
+            }
+
+            formRegistro.onsubmit = async (e) => {
+              e.preventDefault();
+              const recurso = selectorRecurso.value;
+              const esquema = ESQUEMAS[recurso];
+              const formData = new FormData(formRegistro);
+              const payload = {};
+
+              esquema.campos.forEach(c => {
+                const valor = formData.get(c.name);
+                payload[c.name] = c.type === 'number' ? parseInt(valor, 10) : valor;
+              });
+
+              try {
+                const url = esModificacion
+                  ? `${API_BASE_URL}/${recurso}/${idEditando}`
+                  : `${API_BASE_URL}/${recurso}`;
+
+                const metodo = esModificacion ? 'PUT' : 'POST';
+
+                const respuesta = await fetch(url, {
+                  method: metodo,
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify(payload)
+                });
+
+                if (!respuesta.ok) {
+                  const detalle = await respuesta.text();
+                  throw new Error(detalle || `Código HTTP ${respuesta.status}`);
+                }
+
+                cerrarModal();
+                await cargarDatos();
+              } catch (error) {
+                alert(`Error al guardar recurso: ${error.message}`);
+              }
+            };
+
+            selectorRecurso.onchange = cargarDatos;
+            btnRecargar.onclick = cargarDatos;
+            btnNuevo.onclick = () => abrirModalFormulario(null, false);
+            btnCerrarModal.onclick = cerrarModal;
+            btnCancelar.onclick = cerrarModal;
+
+            // Carga inicial
+            cargarDatos();</script>
 </body>
 </html>
