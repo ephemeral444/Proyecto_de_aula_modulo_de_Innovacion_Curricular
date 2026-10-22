@@ -121,3 +121,4 @@ INSERT INTO dbo.aliado (nit, razon_social, contacto, ciudad, activo) VALUES
 INSERT INTO dbo.area_conocimiento (id, gran_area, area, disciplina, activo) VALUES 
 (1, 'Ingenieria, Arquitectura y Urbanismo', 'Ingenieria de Sistemas', 'Ingenieria de Software', 1);
 GO
+
