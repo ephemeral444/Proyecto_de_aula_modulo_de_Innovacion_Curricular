@@ -38,6 +38,8 @@ builder.Services.AddScoped<IServicioAspectoNormativo, ServicioAspectoNormativo>(
 builder.Services.AddScoped<IServicioPracticaEstrategia, ServicioPracticaEstrategia>();
 builder.Services.AddScoped<IServicioEnfoque, ServicioEnfoque>();
 builder.Services.AddScoped<IServicioCarInnovacion, ServicioCarInnovacion>();
+builder.Services.AddScoped<IServicioFacultad, ServicioFacultad>();
+builder.Services.AddScoped<IServicioPrograma, ServicioPrograma>();
 
 var app = builder.Build();
 

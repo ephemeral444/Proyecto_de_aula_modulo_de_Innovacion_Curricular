@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace api_innovacion.Peticiones;
+namespace ApiInnovacion.Peticiones;
 
 public class ProgramaCrear
 {

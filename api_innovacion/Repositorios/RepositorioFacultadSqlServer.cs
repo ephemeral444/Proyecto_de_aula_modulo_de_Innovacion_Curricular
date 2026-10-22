@@ -4,7 +4,6 @@ using Dapper;
 using ApiInnovacion.Excepciones;
 using ApiInnovacion.Modelos;
 
-
 namespace ApiInnovacion.Repositorios;
 
 public class RepositorioFacultadSqlServer : IRepositorioFacultad
@@ -51,7 +50,7 @@ public class RepositorioFacultadSqlServer : IRepositorioFacultad
 
             return resultado ?? throw new InvalidOperationException("Error al crear la facultad.");
         }
-        catch (SqlException ex) when (ex.Number == 547) // Violación de clave foránea en SQL Server
+        catch (SqlException ex) when (ex.Number == 547)
         {
             throw new ConflictoExcepcion("La universidad especificada no existe o no está activa.");
         }

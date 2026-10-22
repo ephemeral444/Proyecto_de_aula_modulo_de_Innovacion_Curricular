@@ -1,6 +1,5 @@
 using ApiInnovacion.Modelos;
 
-
 namespace ApiInnovacion.Repositorios;
 
 public interface IRepositorioFacultad
