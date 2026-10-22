@@ -1,4 +1,4 @@
-namespace api_innovacion.Excepciones;
+namespace ApiInnovacion.Excepciones;
 
 public class ConflictoExcepcion : Exception
 {

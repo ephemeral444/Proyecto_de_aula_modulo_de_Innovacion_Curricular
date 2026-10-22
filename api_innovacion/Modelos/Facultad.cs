@@ -1,4 +1,4 @@
-namespace api_innovacion.Modelos;
+namespace ApiInnovacion.Modelos;
 
 public class Facultad
 {

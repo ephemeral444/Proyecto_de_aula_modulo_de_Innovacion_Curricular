@@ -27,6 +27,8 @@ builder.Services.AddScoped<IRepositorioAspectoNormativo, RepositorioAspectoNorma
 builder.Services.AddScoped<IRepositorioPracticaEstrategia, RepositorioPracticaEstrategiaSqlServer>();
 builder.Services.AddScoped<IRepositorioEnfoque, RepositorioEnfoqueSqlServer>();
 builder.Services.AddScoped<IRepositorioCarInnovacion, RepositorioCarInnovacionSqlServer>();
+builder.Services.AddScoped<IRepositorioFacultad, RepositorioFacultadSqlServer>();
+builder.Services.AddScoped<IRepositorioPrograma, RepositorioProgramaSqlServer>();
 
 // 2. Servicios
 builder.Services.AddScoped<IServicioUniversidad, ServicioUniversidad>();
