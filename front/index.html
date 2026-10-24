@@ -3,614 +3,291 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Módulo de Innovación Curricular — Gestión</title>
+    <title>Módulo Innovación Curricular - v2</title>
     <style>
-        :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --text-color: #f8fafc;
-            --muted-text: #94a3b8;
-            --primary: #38bdf8;
-            --primary-hover: #0284c7;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --warning-hover: #d97706;
-            --success: #22c55e;
-            --border: #334155;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
-
         body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            padding: 2rem 1rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f6f9;
+        }
+
+        h1, h2 {
+            color: #2c3e50;
         }
 
         .container {
-            width: 100%;
-            max-width: 1100px;
             display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-
-        header {
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 1rem;
-        }
-
-        h1 {
-            font-size: 1.8rem;
-            color: var(--primary);
-        }
-
-        p.subtitle {
-            color: var(--muted-text);
-            font-size: 0.95rem;
-        }
-
-        .alert {
-            padding: 1rem;
-            border-radius: 6px;
-            display: none;
-            font-weight: 500;
-        }
-
-        .alert-error {
-            background-color: rgba(239, 68, 68, 0.15);
-            border: 1px solid var(--danger);
-            color: #fca5a5;
-        }
-
-        .alert-warning {
-            background-color: rgba(245, 158, 11, 0.15);
-            border: 1px solid var(--warning);
-            color: #fcd34d;
-        }
-
-        .controls {
-            display: flex;
+            gap: 20px;
             flex-wrap: wrap;
-            gap: 1rem;
-            align-items: center;
-            justify-content: space-between;
-            background-color: var(--card-bg);
-            padding: 1rem;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
             border-radius: 8px;
-            border: 1px solid var(--border);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            flex: 1;
+            min-width: 320px;
         }
 
-        select, button, input {
-            padding: 0.6rem 1rem;
-            border-radius: 6px;
-            border: 1px solid var(--border);
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-size: 0.95rem;
-            outline: none;
+        .form-group {
+            margin-bottom: 15px;
         }
 
-            select:focus, input:focus {
-                border-color: var(--primary);
-            }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
 
         button {
+            background-color: #27ae60;
+            color: white;
+            font-weight: bold;
             cursor: pointer;
-            font-weight: 600;
-            transition: background-color 0.2s, color 0.2s;
+            border: none;
+            margin-top: 10px;
         }
 
-            button.btn-primary {
-                background-color: var(--primary);
-                color: #0f172a;
-                border: none;
+            button:hover {
+                background-color: #219150;
             }
-
-                button.btn-primary:hover {
-                    background-color: var(--primary-hover);
-                }
-
-            button.btn-warning {
-                background-color: transparent;
-                border: 1px solid var(--warning);
-                color: var(--warning);
-            }
-
-                button.btn-warning:hover {
-                    background-color: var(--warning);
-                    color: #0f172a;
-                }
-
-            button.btn-danger {
-                background-color: transparent;
-                border: 1px solid var(--danger);
-                color: var(--danger);
-            }
-
-                button.btn-danger:hover {
-                    background-color: var(--danger);
-                    color: white;
-                }
-
-        .table-container {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            overflow-x: auto;
-        }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            text-align: left;
+            margin-top: 15px;
         }
 
         th, td {
-            padding: 0.85rem 1rem;
-            border-bottom: 1px solid var(--border);
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
         }
 
         th {
-            background-color: rgba(15, 23, 42, 0.5);
-            color: var(--muted-text);
-            font-size: 0.85rem;
-            text-transform: uppercase;
+            background-color: #34495e;
+            color: white;
         }
 
-        tr:last-child td {
-            border-bottom: none;
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 0.2rem 0.6rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            background-color: rgba(34, 197, 94, 0.2);
-            color: var(--success);
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 3rem 1rem;
-            color: var(--muted-text);
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        /* Modal */
-        .modal-backdrop {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.7);
+        .alert {
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
             display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-            z-index: 50;
         }
 
-        .modal {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            max-width: 500px;
-            width: 100%;
-            padding: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
+        .alert-error {
+            background-color: #e74c3c;
+            color: white;
         }
 
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 0.5rem;
+        .alert-success {
+            background-color: #2ecc71;
+            color: white;
         }
 
-        .modal-body {
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.3rem;
-        }
-
-            .form-group label {
-                font-size: 0.85rem;
-                color: var(--muted-text);
-            }
-
-        .modal-footer {
-            display: flex;
-            justify-content: flex-end;
-            gap: 0.5rem;
-            padding-top: 0.5rem;
-            border-top: 1px solid var(--border);
+        .badge {
+            background: #3498db;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.85em;
         }
     </style>
 </head>
 <body>
+
+    <h1>Gestión de Estructura Académica (v2)</h1>
+
+    <div id="alertBox" class="alert"></div>
+
     <div class="container">
-        <header>
-            <h1>Módulo de Innovación Curricular</h1>
-            <p class="subtitle">Panel de consulta y administración de catálogos institucionales</p>
-        </header>
+        <!-- FORMULARIO CREAR FACULTAD (Criterio 5: Select con FK) -->
+        <div class="card">
+            <h2>Crear Facultad</h2>
+            <form id="formFacultad">
+                <div class="form-group">
+                    <label for="nombreFacultad">Nombre de la Facultad</label>
+                    <input type="text" id="nombreFacultad" placeholder="Ej: Facultad de Ingeniería" required>
+                </div>
+                <div class="form-group">
+                    <label for="selectUniversidad">Universidad (Maestro)</label>
+                    <select id="selectUniversidad" required>
+                        <option value="">-- Cargando universidades... --</option>
+                    </select>
+                </div>
+                <button type="submit">Guardar Facultad</button>
+            </form>
+        </div>
 
-        <!-- Alerta de Resiliencia -->
-        <div id="alerta-servicio" class="alert alert-warning"></div>
-
-        <section class="controls">
-            <div style="display: flex; gap: 0.8rem; align-items: center;">
-                <label for="selector-recurso" style="font-weight: 500; font-size: 0.9rem;">Recurso:</label>
-                <select id="selector-recurso">
-                    <option value="universidades">Universidades</option>
-                    <option value="areas-conocimiento">Áreas de Conocimiento</option>
-                    <option value="aspectos-normativos">Aspectos Normativos</option>
-                    <option value="practicas-estrategias">Prácticas y Estrategias</option>
-                    <option value="enfoques">Enfoques</option>
-                    <option value="caracteristicas-innovacion">Características de Innovación</option>
-                    <option value="aliados">Aliados</option>
-                </select>
-                <button id="btn-recargar" class="btn-primary" style="padding: 0.6rem 0.8rem;">Refrescar</button>
-            </div>
-
-            <button id="btn-nuevo" class="btn-primary">+ Nuevo Registro</button>
-        </section>
-
-        <main class="table-container">
-            <table id="tabla-datos">
-                <thead id="tabla-encabezado"></thead>
-                <tbody id="tabla-cuerpo"></tbody>
-            </table>
-            <div id="estado-vacio" class="empty-state" style="display: none;">
-                No hay registros activos disponibles en este catálogo.
-            </div>
-        </main>
-    </div>
-
-    <!-- Modal para Formulario Dinámico -->
-    <div id="modal-formulario" class="modal-backdrop">
-        <div class="modal">
-            <div class="modal-header">
-                <h3 id="modal-titulo">Nuevo Registro</h3>
-                <button id="btn-cerrar-modal" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--text-color);">✕</button>
-            </div>
-            <form id="form-registro" class="modal-body"></form>
-            <div class="modal-footer">
-                <button type="button" id="btn-cancelar" class="btn-danger" style="color: var(--muted-text); border-color: var(--border);">Cancelar</button>
-                <button type="submit" form="form-registro" class="btn-primary">Guardar</button>
-            </div>
+        <!-- FORMULARIO CREAR PROGRAMA -->
+        <div class="card">
+            <h2>Crear Programa Académico</h2>
+            <form id="formPrograma">
+                <div class="form-group">
+                    <label for="nombrePrograma">Nombre del Programa</label>
+                    <input type="text" id="nombrePrograma" placeholder="Ej: Ingeniería de Software" required>
+                </div>
+                <div class="form-group">
+                    <label for="selectFacultad">Facultad Perteneciente</label>
+                    <select id="selectFacultad" required>
+                        <option value="">-- Cargando facultades... --</option>
+                    </select>
+                </div>
+                <button type="submit">Guardar Programa</button>
+            </form>
         </div>
     </div>
 
+    <!-- TABLA MAESTRO - DETALLE (Criterio 9) -->
+    <div class="card" style="margin-top: 20px;">
+        <h2>Estructura Institucional (Vista Maestro-Detalle)</h2>
+        <table id="tablaMaestroDetalle">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Facultad (Detalle)</th>
+                    <th>Universidad (Maestro)</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Contenido cargado vía JS -->
+            </tbody>
+        </table>
+    </div>
+
     <script>
-const API_BASE_URL = 'http://localhost:8124/api';
-            let esModificacion = false;
-            let idEditando = null;
+                const API_BASE = "http://localhost:5000/api";
 
-            const ESQUEMAS = {
-              'universidades': {
-                singular: 'Universidad',
-                idField: 'id',
-                idType: 'number',
-                campos: [
-                  { name: 'id', label: 'ID', type: 'number', required: true, editable: false },
-                  { name: 'nombre', label: 'Nombre', type: 'text', required: true },
-                  { name: 'tipo', label: 'Tipo', type: 'text', required: true },
-                  { name: 'ciudad', label: 'Ciudad', type: 'text', required: true }
-                ]
-              },
-              'areas-conocimiento': {
-                singular: 'Área de Conocimiento',
-                idField: 'id',
-                idType: 'number',
-                campos: [
-                  { name: 'id', label: 'ID', type: 'number', required: true, editable: false },
-                  { name: 'granArea', label: 'Gran Área', type: 'text', required: true },
-                  { name: 'area', label: 'Área', type: 'text', required: true },
-                  { name: 'disciplina', label: 'Disciplina', type: 'text', required: true }
-                ]
-              },
-              'aspectos-normativos': {
-                singular: 'Aspecto Normativo',
-                idField: 'id',
-                idType: 'number',
-                campos: [
-                  { name: 'id', label: 'ID', type: 'number', required: true, editable: false },
-                  { name: 'tipo', label: 'Tipo', type: 'text', required: true },
-                  { name: 'descripcion', label: 'Descripción', type: 'text', required: true },
-                  { name: 'fuente', label: 'Fuente', type: 'text', required: true }
-                ]
-              },
-              'practicas-estrategias': {
-                singular: 'Práctica / Estrategia',
-                idField: 'id',
-                idType: 'number',
-                campos: [
-                  { name: 'id', label: 'ID', type: 'number', required: true, editable: false },
-                  { name: 'tipo', label: 'Tipo', type: 'text', required: true },
-                  { name: 'nombre', label: 'Nombre', type: 'text', required: true },
-                  { name: 'descripcion', label: 'Descripción', type: 'text', required: true }
-                ]
-              },
-              'enfoques': {
-                singular: 'Enfoque',
-                idField: 'id',
-                idType: 'number',
-                campos: [
-                  { name: 'id', label: 'ID', type: 'number', required: true, editable: false },
-                  { name: 'nombre', label: 'Nombre', type: 'text', required: true },
-                  { name: 'descripcion', label: 'Descripción', type: 'text', required: true }
-                ]
-              },
-              'caracteristicas-innovacion': {
-                singular: 'Car. Innovación',
-                idField: 'id',
-                idType: 'number',
-                campos: [
-                  { name: 'id', label: 'ID', type: 'number', required: true, editable: false },
-                  { name: 'nombre', label: 'Nombre', type: 'text', required: true },
-                  { name: 'descripcion', label: 'Descripción', type: 'text', required: true },
-                  { name: 'tipo', label: 'Tipo', type: 'text', required: true }
-                ]
-              },
-              'aliados': {
-                singular: 'Aliado',
-                idField: 'nit',
-                idType: 'text',
-                campos: [
-                  { name: 'nit', label: 'NIT', type: 'text', required: true, editable: false },
-                  { name: 'razonSocial', label: 'Razón Social', type: 'text', required: true },
-                  { name: 'contacto', label: 'Contacto', type: 'text', required: true },
-                  { name: 'ciudad', label: 'Ciudad', type: 'text', required: true }
-                ]
-              }
-            };
-
-            const selectorRecurso = document.getElementById('selector-recurso');
-            const btnRecargar = document.getElementById('btn-recargar');
-            const btnNuevo = document.getElementById('btn-nuevo');
-            const alertaServicio = document.getElementById('alerta-servicio');
-            const tablaEncabezado = document.getElementById('tabla-encabezado');
-            const tablaCuerpo = document.getElementById('tabla-cuerpo');
-            const estadoVacio = document.getElementById('estado-vacio');
-            const modalFormulario = document.getElementById('modal-formulario');
-            const modalTitulo = document.getElementById('modal-titulo');
-            const formRegistro = document.getElementById('form-registro');
-            const btnCerrarModal = document.getElementById('btn-cerrar-modal');
-            const btnCancelar = document.getElementById('btn-cancelar');
-
-            function mostrarAlerta(mensaje, esError = false) {
-              alertaServicio.textContent = mensaje;
-              alertaServicio.className = `alert ${esError ? 'alert-error' : 'alert-warning'}`;
-              alertaServicio.style.display = 'block';
-            }
-
-            function ocultarAlerta() {
-              alertaServicio.style.display = 'none';
-            }
-
-            async function cargarDatos() {
-              ocultarAlerta();
-              const recurso = selectorRecurso.value;
-              const esquema = ESQUEMAS[recurso];
-
-              try {
-                const respuesta = await fetch(`${API_BASE_URL}/${recurso}`);
-
-                if (respuesta.status === 204) {
-                  renderizarTabla(esquema, []);
-                  return;
+                function mostrarAlerta(mensaje, esError = false) {
+                    const box = document.getElementById("alertBox");
+                    box.className = `alert ${esError ? "alert-error" : "alert-success"}`;
+                    box.innerText = mensaje;
+                    box.style.display = "block";
+                    setTimeout(() => { box.style.display = "none"; }, 5000);
                 }
 
-                if (!respuesta.ok) {
-                  throw new Error(`El servidor respondió con código HTTP ${respuesta.status}`);
+                // 1. CARGAR SELECT DE UNIVERSIDADES (Criterio 5)
+                async function cargarUniversidadesSelect() {
+                    const select = document.getElementById("selectUniversidad");
+                    try {
+                        const res = await fetch(`${API_BASE}/universidad`);
+                        if (!res.ok) throw new Error("Error al consultar universidades");
+                        const universidades = await res.json();
+
+                        select.innerHTML = '<option value="">-- Seleccione una Universidad --</option>';
+                        universidades.forEach(u => {
+                            const opt = document.createElement("option");
+                            opt.value = u.id;
+                            opt.textContent = `${u.nombre} (${u.totalFacultades || 0} fac.)`;
+                            select.appendChild(opt);
+                        });
+                    } catch (err) {
+                        select.innerHTML = '<option value="">Error cargando opciones</option>';
+                    }
                 }
 
-                const data = await respuesta.json();
-                const lista = data.datos || data;
-                renderizarTabla(esquema, lista);
-              } catch (error) {
-                mostrarAlerta(`Aviso: No se pudo establecer conexión con el backend en ${API_BASE_URL}. Asegúrese de que la API esté encendida.`, true);
-                renderizarTabla(esquema, []);
-              }
-            }
+                // 2. CARGAR SELECT DE FACULTADES
+                async function cargarFacultadesSelect() {
+                    const select = document.getElementById("selectFacultad");
+                    try {
+                        const res = await fetch(`${API_BASE}/facultad`);
+                        if (!res.ok) throw new Error("Error al consultar facultades");
+                        const facultades = await res.json();
 
-            function renderizarTabla(esquema, registros) {
-              tablaEncabezado.innerHTML = '';
-              tablaCuerpo.innerHTML = '';
+                        select.innerHTML = '<option value="">-- Seleccione una Facultad --</option>';
+                        facultades.forEach(f => {
+                            const opt = document.createElement("option");
+                            opt.value = f.id;
+                            opt.textContent = `${f.nombre} - ${f.universidadNombre}`;
+                            select.appendChild(opt);
+                        });
+                    } catch (err) {
+                        select.innerHTML = '<option value="">Error cargando opciones</option>';
+                    }
+                }
 
-              const trEncabezado = document.createElement('tr');
-              esquema.campos.forEach(c => {
-                const th = document.createElement('th');
-                th.textContent = c.label;
-                trEncabezado.appendChild(th);
-              });
-              const thEstado = document.createElement('th');
-              thEstado.textContent = 'Estado';
-              trEncabezado.appendChild(thEstado);
+                // 3. CARGAR TABLA MAESTRO-DETALLE DE FACULTADES
+                async function cargarTablaFacultades() {
+                    const tbody = document.querySelector("#tablaMaestroDetalle tbody");
+                    try {
+                        const res = await fetch(`${API_BASE}/facultad`);
+                        const facultades = await res.json();
 
-              const thAcciones = document.createElement('th');
-              thAcciones.textContent = 'Acciones';
-              trEncabezado.appendChild(thAcciones);
-              tablaEncabezado.appendChild(trEncabezado);
+                        tbody.innerHTML = "";
+                        facultades.forEach(f => {
+                            const tr = document.createElement("tr");
+                            tr.innerHTML = `
+                                <td>${f.id}</td>
+                                <td><strong>${f.nombre}</strong></td>
+                                <td><span class="badge">${f.universidadNombre}</span></td>
+                                <td>
+                                    <button style="background-color: #e74c3c; width: auto; padding: 5px 10px;" onclick="eliminarFacultad(${f.id})">Retirar</button>
+                                </td>
+                            `;
+                            tbody.appendChild(tr);
+                        });
+                    } catch (err) {
+                        tbody.innerHTML = '<tr><td colspan="4">Error al cargar listado.</td></tr>';
+                    }
+                }
 
-              if (!registros || registros.length === 0) {
-                estadoVacio.style.display = 'block';
-                return;
-              }
-              estadoVacio.style.display = 'none';
+                // 4. GUARDAR FACULTAD CON MANEJO DE ERROR 409
+                document.getElementById("formFacultad").addEventListener("submit", async (e) => {
+                    e.preventDefault();
+                    const body = {
+                        nombre: document.getElementById("nombreFacultad").value,
+                        universidadId: parseInt(document.getElementById("selectUniversidad").value)
+                    };
 
-              registros.forEach(item => {
-                const tr = document.createElement('tr');
-                esquema.campos.forEach(c => {
-                  const td = document.createElement('td');
-                  const val = item[c.name] ?? item[c.name.charAt(0).toUpperCase() + c.name.slice(1)];
-                  td.textContent = val !== undefined && val !== null ? val : '';
-                  tr.appendChild(td);
+                    const res = await fetch(`${API_BASE}/facultad`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(body)
+                    });
+
+                    if (res.status === 409) {
+                        const err = await res.json();
+                        mostrarAlerta(`[Error 409]: ${err.mensaje}`, true);
+                    } else if (res.ok) {
+                        mostrarAlerta("Facultad registrada con éxito.");
+                        document.getElementById("formFacultad").reset();
+                        cargarTablaFacultades();
+                        cargarFacultadesSelect();
+                        cargarUniversidadesSelect(); // Actualiza contador del trigger
+                    } else {
+                        mostrarAlerta("Ocurrió un error inesperado al guardar.", true);
+                    }
                 });
 
-                const tdEstado = document.createElement('td');
-                const badge = document.createElement('span');
-                badge.className = 'status-badge';
-                badge.textContent = 'Activo';
-                tdEstado.appendChild(badge);
-                tr.appendChild(tdEstado);
+                // 5. BORRADO LÓGICO DE FACULTAD
+                async function eliminarFacultad(id) {
+                    if (!confirm("¿Desea retirar esta facultad?")) return;
+                    const res = await fetch(`${API_BASE}/facultad/${id}`, { method: "DELETE" });
+                    if (res.ok) {
+                        mostrarAlerta("Facultad retirada (borrado lógico aplicado).");
+                        cargarTablaFacultades();
+                        cargarFacultadesSelect();
+                        cargarUniversidadesSelect();
+                    }
+                }
 
-                const tdAcciones = document.createElement('td');
-                tdAcciones.className = 'action-buttons';
-
-                const idVal = item[esquema.idField] ?? item[esquema.idField.charAt(0).toUpperCase() + esquema.idField.slice(1)];
-
-                // BOTÓN MODIFICAR
-                const btnEditar = document.createElement('button');
-                btnEditar.className = 'btn-warning';
-                btnEditar.textContent = 'Modificar';
-                btnEditar.onclick = () => abrirModalFormulario(item, true);
-
-                // BOTÓN INACTIVAR / ELIMINAR
-                const btnEliminar = document.createElement('button');
-                btnEliminar.className = 'btn-danger';
-                btnEliminar.textContent = 'Inactivar';
-                btnEliminar.onclick = () => inactivarRegistro(selectorRecurso.value, idVal);
-
-                tdAcciones.appendChild(btnEditar);
-                tdAcciones.appendChild(btnEliminar);
-                tr.appendChild(tdAcciones);
-
-                tablaCuerpo.appendChild(tr);
-              });
-            }
-
-            async function inactivarRegistro(recurso, id) {
-              if (!confirm(`¿Está seguro de inactivar el registro con identificador ${id}?`)) return;
-
-              try {
-                const respuesta = await fetch(`${API_BASE_URL}/${recurso}/${id}`, {
-                  method: 'DELETE'
+                // INICIALIZACIÓN
+                window.addEventListener("DOMContentLoaded", () => {
+                    cargarUniversidadesSelect();
+                    cargarFacultadesSelect();
+                    cargarTablaFacultades();
                 });
-
-                if (!respuesta.ok) {
-                  throw new Error('Error al procesar el borrado lógico.');
-                }
-
-                await cargarDatos();
-              } catch (error) {
-                mostrarAlerta(`No se pudo inactivar el registro: ${error.message}`, true);
-              }
-            }
-
-            function abrirModalFormulario(datos = null, editar = false) {
-              esModificacion = editar;
-              const recurso = selectorRecurso.value;
-              const esquema = ESQUEMAS[recurso];
-
-              modalTitulo.textContent = editar ? `Modificar — ${esquema.singular}` : `Nuevo — ${esquema.singular}`;
-              formRegistro.innerHTML = '';
-
-              const idCampoNombre = esquema.idField;
-              idEditando = datos ? (datos[idCampoNombre] ?? datos[idCampoNombre.charAt(0).toUpperCase() + idCampoNombre.slice(1)]) : null;
-
-              esquema.campos.forEach(c => {
-                const div = document.createElement('div');
-                div.className = 'form-group';
-                const label = document.createElement('label');
-                label.textContent = c.label;
-                const input = document.createElement('input');
-                input.type = c.type;
-                input.name = c.name;
-                input.required = c.required;
-
-                if (datos) {
-                  const val = datos[c.name] ?? datos[c.name.charAt(0).toUpperCase() + c.name.slice(1)];
-                  input.value = val !== undefined && val !== null ? val : '';
-                }
-
-                // Si es modificacion y es la clave primaria, deshabilita la edición del ID
-                if (editar && c.name === esquema.idField) {
-                  input.readOnly = true;
-                  input.style.opacity = '0.6';
-                }
-
-                div.appendChild(label);
-                div.appendChild(input);
-                formRegistro.appendChild(div);
-              });
-
-              modalFormulario.style.display = 'flex';
-            }
-
-            function cerrarModal() {
-              modalFormulario.style.display = 'none';
-              formRegistro.reset();
-              esModificacion = false;
-              idEditando = null;
-            }
-
-            formRegistro.onsubmit = async (e) => {
-              e.preventDefault();
-              const recurso = selectorRecurso.value;
-              const esquema = ESQUEMAS[recurso];
-              const formData = new FormData(formRegistro);
-              const payload = {};
-
-              esquema.campos.forEach(c => {
-                const valor = formData.get(c.name);
-                payload[c.name] = c.type === 'number' ? parseInt(valor, 10) : valor;
-              });
-
-              try {
-                const url = esModificacion
-                  ? `${API_BASE_URL}/${recurso}/${idEditando}`
-                  : `${API_BASE_URL}/${recurso}`;
-
-                const metodo = esModificacion ? 'PUT' : 'POST';
-
-                const respuesta = await fetch(url, {
-                  method: metodo,
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify(payload)
-                });
-
-                if (!respuesta.ok) {
-                  const detalle = await respuesta.text();
-                  throw new Error(detalle || `Código HTTP ${respuesta.status}`);
-                }
-
-                cerrarModal();
-                await cargarDatos();
-              } catch (error) {
-                alert(`Error al guardar recurso: ${error.message}`);
-              }
-            };
-
-            selectorRecurso.onchange = cargarDatos;
-            btnRecargar.onclick = cargarDatos;
-            btnNuevo.onclick = () => abrirModalFormulario(null, false);
-            btnCerrarModal.onclick = cerrarModal;
-            btnCancelar.onclick = cerrarModal;
-
-            // Carga inicial
-            cargarDatos();</script>
+    </script>
 </body>
 </html>
