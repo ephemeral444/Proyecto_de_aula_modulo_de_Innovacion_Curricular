@@ -893,6 +893,67 @@ BEGIN
 END;
 GO
 
+USE [innovacion_curricular];
+GO
+
+-- 5. ENFOQUE <-> REGISTRO CALIFICADO
+CREATE OR ALTER PROCEDURE sp_asignar_enfoque_rc 
+    @enfoque_id INT, 
+    @registro_calificado_codigo VARCHAR(100) 
+AS
+BEGIN
+    SET NOCOUNT ON;
+    INSERT INTO enfoque_rc (enfoque_id, registro_calificado_codigo) 
+    VALUES (@enfoque_id, @registro_calificado_codigo);
+END;
+GO
+
+CREATE OR ALTER PROCEDURE sp_retirar_enfoque_rc 
+    @enfoque_id INT, 
+    @registro_calificado_codigo VARCHAR(100) 
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DELETE FROM enfoque_rc 
+    WHERE enfoque_id = @enfoque_id AND registro_calificado_codigo = @registro_calificado_codigo;
+END;
+GO
+
+-- 6. ACTIVIDAD ACADEMICA <-> REGISTRO CALIFICADO (Con datos extra)
+CREATE OR ALTER PROCEDURE sp_asignar_aa_rc 
+    @activ_academica_id INT, 
+    @registro_calificado_codigo VARCHAR(100), 
+    @componente VARCHAR(100), 
+    @semestre INT 
+AS
+BEGIN
+    SET NOCOUNT ON;
+    INSERT INTO aa_rc (activ_academica_id, registro_calificado_codigo, componente, semestre) 
+    VALUES (@activ_academica_id, @registro_calificado_codigo, @componente, @semestre);
+END;
+GO
+
+CREATE OR ALTER PROCEDURE dbo.sp_retirar_aa_rc
+    @activ_academica_id INT,
+    @registro_calificado_codigo VARCHAR(100)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DELETE FROM dbo.aa_rc
+    WHERE activ_academica_id = @activ_academica_id
+      AND registro_calificado_codigo = @registro_calificado_codigo;
+END;
+GO
+
+-- Verifica la definición y los parámetros que quedaron instalados.
+SELECT p.name AS parametro, TYPE_NAME(p.user_type_id) AS tipo, p.max_length
+FROM sys.parameters p
+WHERE p.object_id = OBJECT_ID(N'dbo.sp_retirar_aa_rc')
+ORDER BY p.parameter_id;
+GO
+
+
 -- Verificacion: deben aparecer los cuatro procedimientos.
 SELECT name AS procedimiento
 FROM sys.procedures

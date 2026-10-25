@@ -655,699 +655,728 @@
     </dialog>
 
     <script>
-                            const API_BASE = "http://localhost:8124/api";
+                                    const API_BASE = "http://localhost:8124/api";
 
-                            // Estos módulos siguen las rutas, campos y operaciones que existen en los controladores del proyecto.
-                            const MODULES = [
-                              {
-                                key: "universidades", title: "Universidades", route: "universidades", primaryKey: "id", open: true,
-                                description: "Instituciones principales; el ID se ingresa manualmente.",
-                                fields: [
-                                  { key: "id", label: "ID", type: "number", required: true, min: 1 },
-                                  { key: "nombre", label: "Nombre de la universidad", required: true, maxLength: 150 },
-                                  { key: "tipo", label: "Tipo", required: true, maxLength: 50 },
-                                  { key: "ciudad", label: "Ciudad", required: true, maxLength: 100 }
-                                ],
-                                columns: [{key:"id",label:"ID"},{key:"nombre",label:"Universidad"},{key:"tipo",label:"Tipo"},{key:"ciudad",label:"Ciudad"},{key:"activo",label:"Estado",kind:"status"}],
-                                update: { method: "PATCH", fields: ["nombre", "tipo", "ciudad"] }, deleteLabel: "Inactivar"
-                              },
-                              {
-                                key: "facultades", title: "Facultades", route: "facultad", primaryKey: "id", open: true,
-                                description: "Cada facultad pertenece a una universidad.",
-                                fields: [
-                                  { key: "nombre", label: "Nombre de la facultad", required: true, maxLength: 200 },
-                                  { key: "universidadId", label: "Universidad", type: "select", source: "universidades", required: true }
-                                ],
-                                columns: [{key:"id",label:"ID"},{key:"nombre",label:"Facultad"},{key:"universidadNombre",label:"Universidad"},{key:"activo",label:"Estado",kind:"status"}],
-                                update: { method: "PUT", fields: ["nombre", "universidadId"] }, deleteLabel: "Inactivar"
-                              },
-                              {
-                                key: "programas", title: "Programas académicos", route: "programa", primaryKey: "id", open: true,
-                                description: "Cada programa está asociado a una facultad.",
-                                fields: [
-                                  { key: "nombre", label: "Nombre del programa", required: true, maxLength: 200 },
-                                  { key: "facultadId", label: "Facultad", type: "select", source: "facultades", required: true }
-                                ],
-                                columns: [{key:"id",label:"ID"},{key:"nombre",label:"Programa"},{key:"facultadNombre",label:"Facultad"},{key:"activo",label:"Estado",kind:"status"}],
-                                update: { method: "PUT", fields: ["nombre", "facultadId"] }, deleteLabel: "Inactivar"
-                              },
-                              {
-                                key: "aliados", title: "Aliados", route: "aliados", primaryKey: "nit",
-                                description: "Organizaciones aliadas vinculadas con actividades de innovación.",
-                                fields: [
-                                  { key: "nit", label: "NIT", required: true, maxLength: 20 },
-                                  { key: "razonSocial", label: "Razón social", required: true, maxLength: 150 },
-                                  { key: "contacto", label: "Contacto (correo o persona)", required: true, maxLength: 150 },
-                                  { key: "ciudad", label: "Ciudad", required: true, maxLength: 100 }
-                                ],
-                                columns: [{key:"nit",label:"NIT"},{key:"razonSocial",label:"Razón social"},{key:"contacto",label:"Contacto"},{key:"ciudad",label:"Ciudad"},{key:"activo",label:"Estado",kind:"status"}],
-                                update: { method: "PATCH", fields: ["razonSocial", "contacto", "ciudad"] }, deleteLabel: "Inactivar"
-                              },
-                              {
-                                key: "areasConocimiento", title: "Áreas de conocimiento", route: "areas-conocimiento", primaryKey: "id",
-                                description: "La entidad usa un ID manual, además de gran área, área y disciplina.",
-                                fields: [
-                                  { key: "id", label: "ID", type: "number", required: true, min: 1 },
-                                  { key: "granArea", label: "Gran área", required: true, maxLength: 150 },
-                                  { key: "area", label: "Área", required: true, maxLength: 150 },
-                                  { key: "disciplina", label: "Disciplina", required: true, maxLength: 150 }
-                                ],
-                                columns: [{key:"id",label:"ID"},{key:"granArea",label:"Gran área"},{key:"area",label:"Área"},{key:"disciplina",label:"Disciplina"},{key:"activo",label:"Estado",kind:"status"}],
-                                update: { method: "PATCH", fields: ["granArea", "area", "disciplina"] }, deleteLabel: "Inactivar"
-                              },
-                              {
-                                key: "aspectosNormativos", title: "Aspectos normativos", route: "aspectos-normativos", primaryKey: "id",
-                                description: "Normas, lineamientos o fuentes relevantes para los programas.",
-                                fields: [
-                                  { key: "id", label: "ID", type: "number", required: true, min: 1 },
-                                  { key: "tipo", label: "Tipo", required: true, maxLength: 50 },
-                                  { key: "descripcion", label: "Descripción", type: "textarea", required: true, maxLength: 500 },
-                                  { key: "fuente", label: "Fuente", required: true, maxLength: 200 }
-                                ],
-                                columns: [{key:"id",label:"ID"},{key:"tipo",label:"Tipo"},{key:"descripcion",label:"Descripción"},{key:"fuente",label:"Fuente"},{key:"activo",label:"Estado",kind:"status"}],
-                                update: { method: "PATCH", fields: ["tipo", "descripcion", "fuente"] }, deleteLabel: "Inactivar"
-                              },
-                              {
-                                key: "practicasEstrategias", title: "Prácticas y estrategias", route: "practicas-estrategias", primaryKey: "id",
-                                description: "Prácticas o estrategias relacionadas con la innovación curricular.",
-                                fields: [
-                                  { key: "id", label: "ID", type: "number", required: true, min: 1 },
-                                  { key: "tipo", label: "Tipo", required: true, maxLength: 50 },
-                                  { key: "nombre", label: "Nombre", required: true, maxLength: 150 },
-                                  { key: "descripcion", label: "Descripción", type: "textarea", required: true, maxLength: 500 }
-                                ],
-                                columns: [{key:"id",label:"ID"},{key:"tipo",label:"Tipo"},{key:"nombre",label:"Nombre"},{key:"descripcion",label:"Descripción"},{key:"activo",label:"Estado",kind:"status"}],
-                                update: { method: "PATCH", fields: ["tipo", "nombre", "descripcion"] }, deleteLabel: "Inactivar"
-                              },
-                              {
-                                key: "enfoques", title: "Enfoques", route: "enfoques", primaryKey: "id",
-                                description: "Enfoques metodológicos; el ID se ingresa manualmente.",
-                                fields: [
-                                  { key: "id", label: "ID", type: "number", required: true, min: 1 },
-                                  { key: "nombre", label: "Nombre", required: true, maxLength: 150 },
-                                  { key: "descripcion", label: "Descripción", type: "textarea", required: true, maxLength: 500 }
-                                ],
-                                columns: [{key:"id",label:"ID"},{key:"nombre",label:"Nombre"},{key:"descripcion",label:"Descripción"},{key:"activo",label:"Estado",kind:"status"}],
-                                update: { method: "PATCH", fields: ["nombre", "descripcion"] }, deleteLabel: "Inactivar"
-                              },
-                              {
-                                key: "caracteristicasInnovacion", title: "Características de innovación", route: "caracteristicas-innovacion", primaryKey: "id",
-                                description: "Características que describen la innovación curricular.",
-                                fields: [
-                                  { key: "id", label: "ID", type: "number", required: true, min: 1 },
-                                  { key: "nombre", label: "Nombre", required: true, maxLength: 150 },
-                                  { key: "descripcion", label: "Descripción", type: "textarea", required: true, maxLength: 500 },
-                                  { key: "tipo", label: "Tipo", required: true, maxLength: 50 }
-                                ],
-                                columns: [{key:"id",label:"ID"},{key:"nombre",label:"Nombre"},{key:"descripcion",label:"Descripción"},{key:"tipo",label:"Tipo"},{key:"activo",label:"Estado",kind:"status"}],
-                                update: { method: "PATCH", fields: ["nombre", "descripcion", "tipo"] }, deleteLabel: "Inactivar"
-                              },
-                              {
-                                key: "acreditaciones", title: "Acreditaciones", route: "acreditacion", primaryKey: "resolucion",
-                                description: "Acreditaciones asociadas a un programa académico.",
-                                fields: [
-                                  { key: "resolucion", label: "Resolución", required: true, maxLength: 100 },
-                                  { key: "tipo", label: "Tipo de acreditación", required: true, maxLength: 100 },
-                                  { key: "calificacion", label: "Calificación", nullable: true, maxLength: 50 },
-                                  { key: "fechaInicio", label: "Fecha de inicio", type: "date", nullable: true },
-                                  { key: "fechaFin", label: "Fecha de fin", type: "date", nullable: true },
-                                  { key: "programaId", label: "Programa académico", type: "select", source: "programas", required: true }
-                                ],
-                                columns: [{key:"resolucion",label:"Resolución"},{key:"tipo",label:"Tipo"},{key:"calificacion",label:"Calificación"},{key:"fechaInicio",label:"Inicio",kind:"date"},{key:"fechaFin",label:"Fin",kind:"date"},{key:"programaNombre",label:"Programa"},{key:"activo",label:"Estado",kind:"status"}],
-                                update: { method: "PUT", fields: ["tipo", "calificacion", "fechaInicio", "fechaFin", "programaId"] }, deleteLabel: "Inactivar"
-                              },
-                              {
-                                key: "registrosCalificados", title: "Registros calificados", route: "registro-calificado", primaryKey: "codigo",
-                                description: "Registro calificado, créditos, horas, metodología y titulación por programa.",
-                                fields: [
-                                  { key: "codigo", label: "Código", required: true, maxLength: 100 },
-                                  { key: "creditos", label: "Créditos", type: "number", required: true, min: 0 },
-                                  { key: "horas", label: "Horas", type: "number", required: true, min: 0 },
-                                  { key: "metodologia", label: "Metodología", nullable: true, maxLength: 100 },
-                                  { key: "duracion", label: "Duración", nullable: true, maxLength: 50 },
-                                  { key: "titulacion", label: "Titulación", nullable: true, maxLength: 200 },
-                                  { key: "programaId", label: "Programa académico", type: "select", source: "programas", required: true }
-                                ],
-                                columns: [{key:"codigo",label:"Código"},{key:"creditos",label:"Créditos"},{key:"horas",label:"Horas"},{key:"metodologia",label:"Metodología"},{key:"duracion",label:"Duración"},{key:"titulacion",label:"Titulación"},{key:"programaNombre",label:"Programa"},{key:"activo",label:"Estado",kind:"status"}],
-                                update: { method: "PUT", fields: ["creditos", "horas", "metodologia", "duracion", "titulacion", "programaId"] }, deleteLabel: "Inactivar"
-                              },
-                              {
-                                key: "actividadesAcademicas", title: "Actividades académicas", route: "activ-academica", primaryKey: "id",
-                                description: "Cursos o actividades académicas con créditos, horas, idioma y programa.",
-                                fields: [
-                                  { key: "nombre", label: "Nombre de la actividad", required: true, maxLength: 200 },
-                                  { key: "creditos", label: "Créditos", type: "number", required: true, min: 0 },
-                                  { key: "horas", label: "Horas", type: "number", required: true, min: 0 },
-                                  { key: "idioma", label: "Idioma", required: true, maxLength: 50, defaultValue: "Español" },
-                                  { key: "esEspejo", label: "Es actividad espejo", type: "checkbox", defaultValue: false },
-                                  { key: "programaId", label: "Programa académico", type: "select", source: "programas", required: true }
-                                ],
-                                columns: [{key:"id",label:"ID"},{key:"nombre",label:"Actividad"},{key:"creditos",label:"Créditos"},{key:"horas",label:"Horas"},{key:"idioma",label:"Idioma"},{key:"esEspejo",label:"Espejo",kind:"yesno"},{key:"programaNombre",label:"Programa"},{key:"activo",label:"Estado",kind:"status"}],
-                                update: { method: "PUT", fields: ["nombre", "creditos", "horas", "idioma", "esEspejo", "programaId"] }, deleteLabel: "Inactivar"
-                              },
-                              {
-                                key: "alianzas", title: "Alianzas", route: "alianza", primaryKey: "id",
-                                description: "Relaciona una organización aliada con un programa académico.",
-                                fields: [
-                                  { key: "aliadoNit", label: "Aliado", type: "select", source: "aliados", valueKey: "nit", valueType: "string", required: true },
-                                  { key: "programaId", label: "Programa académico", type: "select", source: "programas", required: true },
-                                  { key: "docenteResponsable", label: "Docente responsable", nullable: true, maxLength: 200 },
-                                  { key: "fechaInicio", label: "Fecha de inicio", type: "date", nullable: true },
-                                  { key: "fechaFin", label: "Fecha de fin", type: "date", nullable: true }
-                                ],
-                                columns: [{key:"id",label:"ID"},{key:"aliadoNombre",label:"Aliado"},{key:"programaNombre",label:"Programa"},{key:"docenteResponsable",label:"Docente responsable"},{key:"fechaInicio",label:"Inicio",kind:"date"},{key:"fechaFin",label:"Fin",kind:"date"},{key:"activo",label:"Estado",kind:"status"}],
-                                update: { method: "PUT", fields: ["aliadoNit", "programaId", "docenteResponsable", "fechaInicio", "fechaFin"] }, deleteLabel: "Retirar alianza"
-                              },
-                              {
-                                key: "docentesDepartamento", title: "Docente–Departamento", route: "docente-departamento", primaryKey: "id",
-                                description: "Registra dedicación y modalidad de docentes asociados a programas.",
-                                fields: [
-                                  { key: "docenteNombre", label: "Nombre del docente", required: true, maxLength: 200 },
-                                  { key: "dedicacion", label: "Dedicación", nullable: true, maxLength: 100 },
-                                  { key: "modalidad", label: "Modalidad", nullable: true, maxLength: 100 },
-                                  { key: "fechaInicio", label: "Fecha de inicio", type: "date", nullable: true },
-                                  { key: "fechaFin", label: "Fecha de fin", type: "date", nullable: true },
-                                  { key: "programaId", label: "Programa académico", type: "select", source: "programas", required: true }
-                                ],
-                                columns: [{key:"id",label:"ID"},{key:"docenteNombre",label:"Docente"},{key:"dedicacion",label:"Dedicación"},{key:"modalidad",label:"Modalidad"},{key:"fechaInicio",label:"Inicio",kind:"date"},{key:"fechaFin",label:"Fin",kind:"date"},{key:"programaNombre",label:"Programa"},{key:"activo",label:"Estado",kind:"status"}],
-                                update: { method: "PUT", fields: ["docenteNombre", "dedicacion", "modalidad", "fechaInicio", "fechaFin", "programaId"] }, deleteLabel: "Inactivar"
-                              },
-                              {
-                                key: "pasantias", title: "Pasantías", route: "pasantia", primaryKey: "id",
-                                description: "Administra las pasantías asociadas con programas académicos.",
-                                fields: [
-                                  { key: "nombre", label: "Nombre de la pasantía", required: true, maxLength: 200 },
-                                  { key: "descripcion", label: "Descripción", type: "textarea", nullable: true, maxLength: 1000 },
-                                  { key: "programaId", label: "Programa académico", type: "select", source: "programas", required: true }
-                                ],
-                                columns: [{key:"id",label:"ID"},{key:"nombre",label:"Pasantía"},{key:"descripcion",label:"Descripción"},{key:"programaNombre",label:"Programa"},{key:"activo",label:"Estado",kind:"status"}],
-                                update: { method: "PUT", fields: ["nombre", "descripcion", "programaId"] }, deleteLabel: "Inactivar"
-                              },
-                              {
-                                key: "premios", title: "Premios", route: "premio", primaryKey: "id",
-                                description: "Registra reconocimientos recibidos por programas académicos.",
-                                fields: [
-                                  { key: "nombre", label: "Nombre del premio", required: true, maxLength: 200 },
-                                  { key: "entidadOtorgante", label: "Entidad otorgante", required: true, maxLength: 200 },
-                                  { key: "fechaOtorgamiento", label: "Fecha de otorgamiento", type: "date", nullable: true },
-                                  { key: "programaId", label: "Programa académico", type: "select", source: "programas", required: true }
-                                ],
-                                columns: [{key:"id",label:"ID"},{key:"nombre",label:"Premio"},{key:"entidadOtorgante",label:"Entidad otorgante"},{key:"fechaOtorgamiento",label:"Fecha",kind:"date"},{key:"programaNombre",label:"Programa"},{key:"activo",label:"Estado",kind:"status"}],
-                                update: { method: "PUT", fields: ["nombre", "entidadOtorgante", "fechaOtorgamiento", "programaId"] }, deleteLabel: "Inactivar"
-                              }
-                            ];
+                                    // Estos módulos siguen las rutas, campos y operaciones que existen en los controladores del proyecto.
+                                    const MODULES = [
+                                      {
+                                        key: "universidades", title: "Universidades", route: "universidades", primaryKey: "id", open: true,
+                                        description: "Instituciones principales; el ID se ingresa manualmente.",
+                                        fields: [
+                                          { key: "id", label: "ID", type: "number", required: true, min: 1 },
+                                          { key: "nombre", label: "Nombre de la universidad", required: true, maxLength: 150 },
+                                          { key: "tipo", label: "Tipo", required: true, maxLength: 50 },
+                                          { key: "ciudad", label: "Ciudad", required: true, maxLength: 100 }
+                                        ],
+                                        columns: [{key:"id",label:"ID"},{key:"nombre",label:"Universidad"},{key:"tipo",label:"Tipo"},{key:"ciudad",label:"Ciudad"},{key:"activo",label:"Estado",kind:"status"}],
+                                        update: { method: "PATCH", fields: ["nombre", "tipo", "ciudad"] }, deleteLabel: "Inactivar"
+                                      },
+                                      {
+                                        key: "facultades", title: "Facultades", route: "facultad", primaryKey: "id", open: true,
+                                        description: "Cada facultad pertenece a una universidad.",
+                                        fields: [
+                                          { key: "nombre", label: "Nombre de la facultad", required: true, maxLength: 200 },
+                                          { key: "universidadId", label: "Universidad", type: "select", source: "universidades", required: true }
+                                        ],
+                                        columns: [{key:"id",label:"ID"},{key:"nombre",label:"Facultad"},{key:"universidadNombre",label:"Universidad"},{key:"activo",label:"Estado",kind:"status"}],
+                                        update: { method: "PUT", fields: ["nombre", "universidadId"] }, deleteLabel: "Inactivar"
+                                      },
+                                      {
+                                        key: "programas", title: "Programas académicos", route: "programa", primaryKey: "id", open: true,
+                                        description: "Cada programa está asociado a una facultad.",
+                                        fields: [
+                                          { key: "nombre", label: "Nombre del programa", required: true, maxLength: 200 },
+                                          { key: "facultadId", label: "Facultad", type: "select", source: "facultades", required: true }
+                                        ],
+                                        columns: [{key:"id",label:"ID"},{key:"nombre",label:"Programa"},{key:"facultadNombre",label:"Facultad"},{key:"activo",label:"Estado",kind:"status"}],
+                                        update: { method: "PUT", fields: ["nombre", "facultadId"] }, deleteLabel: "Inactivar"
+                                      },
+                                      {
+                                        key: "aliados", title: "Aliados", route: "aliados", primaryKey: "nit",
+                                        description: "Organizaciones aliadas vinculadas con actividades de innovación.",
+                                        fields: [
+                                          { key: "nit", label: "NIT", required: true, maxLength: 20 },
+                                          { key: "razonSocial", label: "Razón social", required: true, maxLength: 150 },
+                                          { key: "contacto", label: "Contacto (correo o persona)", required: true, maxLength: 150 },
+                                          { key: "ciudad", label: "Ciudad", required: true, maxLength: 100 }
+                                        ],
+                                        columns: [{key:"nit",label:"NIT"},{key:"razonSocial",label:"Razón social"},{key:"contacto",label:"Contacto"},{key:"ciudad",label:"Ciudad"},{key:"activo",label:"Estado",kind:"status"}],
+                                        update: { method: "PATCH", fields: ["razonSocial", "contacto", "ciudad"] }, deleteLabel: "Inactivar"
+                                      },
+                                      {
+                                        key: "areasConocimiento", title: "Áreas de conocimiento", route: "areas-conocimiento", primaryKey: "id",
+                                        description: "La entidad usa un ID manual, además de gran área, área y disciplina.",
+                                        fields: [
+                                          { key: "id", label: "ID", type: "number", required: true, min: 1 },
+                                          { key: "granArea", label: "Gran área", required: true, maxLength: 150 },
+                                          { key: "area", label: "Área", required: true, maxLength: 150 },
+                                          { key: "disciplina", label: "Disciplina", required: true, maxLength: 150 }
+                                        ],
+                                        columns: [{key:"id",label:"ID"},{key:"granArea",label:"Gran área"},{key:"area",label:"Área"},{key:"disciplina",label:"Disciplina"},{key:"activo",label:"Estado",kind:"status"}],
+                                        update: { method: "PATCH", fields: ["granArea", "area", "disciplina"] }, deleteLabel: "Inactivar"
+                                      },
+                                      {
+                                        key: "aspectosNormativos", title: "Aspectos normativos", route: "aspectos-normativos", primaryKey: "id",
+                                        description: "Normas, lineamientos o fuentes relevantes para los programas.",
+                                        fields: [
+                                          { key: "id", label: "ID", type: "number", required: true, min: 1 },
+                                          { key: "tipo", label: "Tipo", required: true, maxLength: 50 },
+                                          { key: "descripcion", label: "Descripción", type: "textarea", required: true, maxLength: 500 },
+                                          { key: "fuente", label: "Fuente", required: true, maxLength: 200 }
+                                        ],
+                                        columns: [{key:"id",label:"ID"},{key:"tipo",label:"Tipo"},{key:"descripcion",label:"Descripción"},{key:"fuente",label:"Fuente"},{key:"activo",label:"Estado",kind:"status"}],
+                                        update: { method: "PATCH", fields: ["tipo", "descripcion", "fuente"] }, deleteLabel: "Inactivar"
+                                      },
+                                      {
+                                        key: "practicasEstrategias", title: "Prácticas y estrategias", route: "practicas-estrategias", primaryKey: "id",
+                                        description: "Prácticas o estrategias relacionadas con la innovación curricular.",
+                                        fields: [
+                                          { key: "id", label: "ID", type: "number", required: true, min: 1 },
+                                          { key: "tipo", label: "Tipo", required: true, maxLength: 50 },
+                                          { key: "nombre", label: "Nombre", required: true, maxLength: 150 },
+                                          { key: "descripcion", label: "Descripción", type: "textarea", required: true, maxLength: 500 }
+                                        ],
+                                        columns: [{key:"id",label:"ID"},{key:"tipo",label:"Tipo"},{key:"nombre",label:"Nombre"},{key:"descripcion",label:"Descripción"},{key:"activo",label:"Estado",kind:"status"}],
+                                        update: { method: "PATCH", fields: ["tipo", "nombre", "descripcion"] }, deleteLabel: "Inactivar"
+                                      },
+                                      {
+                                        key: "enfoques", title: "Enfoques", route: "enfoques", primaryKey: "id",
+                                        description: "Enfoques metodológicos; el ID se ingresa manualmente.",
+                                        fields: [
+                                          { key: "id", label: "ID", type: "number", required: true, min: 1 },
+                                          { key: "nombre", label: "Nombre", required: true, maxLength: 150 },
+                                          { key: "descripcion", label: "Descripción", type: "textarea", required: true, maxLength: 500 }
+                                        ],
+                                        columns: [{key:"id",label:"ID"},{key:"nombre",label:"Nombre"},{key:"descripcion",label:"Descripción"},{key:"activo",label:"Estado",kind:"status"}],
+                                        update: { method: "PATCH", fields: ["nombre", "descripcion"] }, deleteLabel: "Inactivar"
+                                      },
+                                      {
+                                        key: "caracteristicasInnovacion", title: "Características de innovación", route: "caracteristicas-innovacion", primaryKey: "id",
+                                        description: "Características que describen la innovación curricular.",
+                                        fields: [
+                                          { key: "id", label: "ID", type: "number", required: true, min: 1 },
+                                          { key: "nombre", label: "Nombre", required: true, maxLength: 150 },
+                                          { key: "descripcion", label: "Descripción", type: "textarea", required: true, maxLength: 500 },
+                                          { key: "tipo", label: "Tipo", required: true, maxLength: 50 }
+                                        ],
+                                        columns: [{key:"id",label:"ID"},{key:"nombre",label:"Nombre"},{key:"descripcion",label:"Descripción"},{key:"tipo",label:"Tipo"},{key:"activo",label:"Estado",kind:"status"}],
+                                        update: { method: "PATCH", fields: ["nombre", "descripcion", "tipo"] }, deleteLabel: "Inactivar"
+                                      },
+                                      {
+                                        key: "acreditaciones", title: "Acreditaciones", route: "acreditacion", primaryKey: "resolucion",
+                                        description: "Acreditaciones asociadas a un programa académico.",
+                                        fields: [
+                                          { key: "resolucion", label: "Resolución", required: true, maxLength: 100 },
+                                          { key: "tipo", label: "Tipo de acreditación", required: true, maxLength: 100 },
+                                          { key: "calificacion", label: "Calificación", nullable: true, maxLength: 50 },
+                                          { key: "fechaInicio", label: "Fecha de inicio", type: "date", nullable: true },
+                                          { key: "fechaFin", label: "Fecha de fin", type: "date", nullable: true },
+                                          { key: "programaId", label: "Programa académico", type: "select", source: "programas", required: true }
+                                        ],
+                                        columns: [{key:"resolucion",label:"Resolución"},{key:"tipo",label:"Tipo"},{key:"calificacion",label:"Calificación"},{key:"fechaInicio",label:"Inicio",kind:"date"},{key:"fechaFin",label:"Fin",kind:"date"},{key:"programaNombre",label:"Programa"},{key:"activo",label:"Estado",kind:"status"}],
+                                        update: { method: "PUT", fields: ["tipo", "calificacion", "fechaInicio", "fechaFin", "programaId"] }, deleteLabel: "Inactivar"
+                                      },
+                                      {
+                                        key: "registrosCalificados", title: "Registros calificados", route: "registro-calificado", primaryKey: "codigo",
+                                        description: "Registro calificado, créditos, horas, metodología y titulación por programa.",
+                                        fields: [
+                                          { key: "codigo", label: "Código", required: true, maxLength: 100 },
+                                          { key: "creditos", label: "Créditos", type: "number", required: true, min: 0 },
+                                          { key: "horas", label: "Horas", type: "number", required: true, min: 0 },
+                                          { key: "metodologia", label: "Metodología", nullable: true, maxLength: 100 },
+                                          { key: "duracion", label: "Duración", nullable: true, maxLength: 50 },
+                                          { key: "titulacion", label: "Titulación", nullable: true, maxLength: 200 },
+                                          { key: "programaId", label: "Programa académico", type: "select", source: "programas", required: true }
+                                        ],
+                                        columns: [{key:"codigo",label:"Código"},{key:"creditos",label:"Créditos"},{key:"horas",label:"Horas"},{key:"metodologia",label:"Metodología"},{key:"duracion",label:"Duración"},{key:"titulacion",label:"Titulación"},{key:"programaNombre",label:"Programa"},{key:"activo",label:"Estado",kind:"status"}],
+                                        update: { method: "PUT", fields: ["creditos", "horas", "metodologia", "duracion", "titulacion", "programaId"] }, deleteLabel: "Inactivar"
+                                      },
+                                      {
+                                        key: "actividadesAcademicas", title: "Actividades académicas", route: "activ-academica", primaryKey: "id",
+                                        description: "Cursos o actividades académicas con créditos, horas, idioma y programa.",
+                                        fields: [
+                                          { key: "nombre", label: "Nombre de la actividad", required: true, maxLength: 200 },
+                                          { key: "creditos", label: "Créditos", type: "number", required: true, min: 0 },
+                                          { key: "horas", label: "Horas", type: "number", required: true, min: 0 },
+                                          { key: "idioma", label: "Idioma", required: true, maxLength: 50, defaultValue: "Español" },
+                                          { key: "esEspejo", label: "Es actividad espejo", type: "checkbox", defaultValue: false },
+                                          { key: "programaId", label: "Programa académico", type: "select", source: "programas", required: true }
+                                        ],
+                                        columns: [{key:"id",label:"ID"},{key:"nombre",label:"Actividad"},{key:"creditos",label:"Créditos"},{key:"horas",label:"Horas"},{key:"idioma",label:"Idioma"},{key:"esEspejo",label:"Espejo",kind:"yesno"},{key:"programaNombre",label:"Programa"},{key:"activo",label:"Estado",kind:"status"}],
+                                        update: { method: "PUT", fields: ["nombre", "creditos", "horas", "idioma", "esEspejo", "programaId"] }, deleteLabel: "Inactivar"
+                                      },
+                                      {
+                                        key: "alianzas", title: "Alianzas", route: "alianza", primaryKey: "id",
+                                        description: "Relaciona una organización aliada con un programa académico.",
+                                        fields: [
+                                          { key: "aliadoNit", label: "Aliado", type: "select", source: "aliados", valueKey: "nit", valueType: "string", required: true },
+                                          { key: "programaId", label: "Programa académico", type: "select", source: "programas", required: true },
+                                          { key: "docenteResponsable", label: "Docente responsable", nullable: true, maxLength: 200 },
+                                          { key: "fechaInicio", label: "Fecha de inicio", type: "date", nullable: true },
+                                          { key: "fechaFin", label: "Fecha de fin", type: "date", nullable: true }
+                                        ],
+                                        columns: [{key:"id",label:"ID"},{key:"aliadoNombre",label:"Aliado"},{key:"programaNombre",label:"Programa"},{key:"docenteResponsable",label:"Docente responsable"},{key:"fechaInicio",label:"Inicio",kind:"date"},{key:"fechaFin",label:"Fin",kind:"date"},{key:"activo",label:"Estado",kind:"status"}],
+                                        update: { method: "PUT", fields: ["aliadoNit", "programaId", "docenteResponsable", "fechaInicio", "fechaFin"] }, deleteLabel: "Retirar alianza"
+                                      },
+                                      {
+                                        key: "docentesDepartamento", title: "Docente–Departamento", route: "docente-departamento", primaryKey: "id",
+                                        description: "Registra dedicación y modalidad de docentes asociados a programas.",
+                                        fields: [
+                                          { key: "docenteNombre", label: "Nombre del docente", required: true, maxLength: 200 },
+                                          { key: "dedicacion", label: "Dedicación", nullable: true, maxLength: 100 },
+                                          { key: "modalidad", label: "Modalidad", nullable: true, maxLength: 100 },
+                                          { key: "fechaInicio", label: "Fecha de inicio", type: "date", nullable: true },
+                                          { key: "fechaFin", label: "Fecha de fin", type: "date", nullable: true },
+                                          { key: "programaId", label: "Programa académico", type: "select", source: "programas", required: true }
+                                        ],
+                                        columns: [{key:"id",label:"ID"},{key:"docenteNombre",label:"Docente"},{key:"dedicacion",label:"Dedicación"},{key:"modalidad",label:"Modalidad"},{key:"fechaInicio",label:"Inicio",kind:"date"},{key:"fechaFin",label:"Fin",kind:"date"},{key:"programaNombre",label:"Programa"},{key:"activo",label:"Estado",kind:"status"}],
+                                        update: { method: "PUT", fields: ["docenteNombre", "dedicacion", "modalidad", "fechaInicio", "fechaFin", "programaId"] }, deleteLabel: "Inactivar"
+                                      },
+                                      {
+                                        key: "pasantias", title: "Pasantías", route: "pasantia", primaryKey: "id",
+                                        description: "Administra las pasantías asociadas con programas académicos.",
+                                        fields: [
+                                          { key: "nombre", label: "Nombre de la pasantía", required: true, maxLength: 200 },
+                                          { key: "descripcion", label: "Descripción", type: "textarea", nullable: true, maxLength: 1000 },
+                                          { key: "programaId", label: "Programa académico", type: "select", source: "programas", required: true }
+                                        ],
+                                        columns: [{key:"id",label:"ID"},{key:"nombre",label:"Pasantía"},{key:"descripcion",label:"Descripción"},{key:"programaNombre",label:"Programa"},{key:"activo",label:"Estado",kind:"status"}],
+                                        update: { method: "PUT", fields: ["nombre", "descripcion", "programaId"] }, deleteLabel: "Inactivar"
+                                      },
+                                      {
+                                        key: "premios", title: "Premios", route: "premio", primaryKey: "id",
+                                        description: "Registra reconocimientos recibidos por programas académicos.",
+                                        fields: [
+                                          { key: "nombre", label: "Nombre del premio", required: true, maxLength: 200 },
+                                          { key: "entidadOtorgante", label: "Entidad otorgante", required: true, maxLength: 200 },
+                                          { key: "fechaOtorgamiento", label: "Fecha de otorgamiento", type: "date", nullable: true },
+                                          { key: "programaId", label: "Programa académico", type: "select", source: "programas", required: true }
+                                        ],
+                                        columns: [{key:"id",label:"ID"},{key:"nombre",label:"Premio"},{key:"entidadOtorgante",label:"Entidad otorgante"},{key:"fechaOtorgamiento",label:"Fecha",kind:"date"},{key:"programaNombre",label:"Programa"},{key:"activo",label:"Estado",kind:"status"}],
+                                        update: { method: "PUT", fields: ["nombre", "entidadOtorgante", "fechaOtorgamiento", "programaId"] }, deleteLabel: "Inactivar"
+                                      }
+                                    ];
 
-                            // Relaciones de tablas puente: la API permite asignar y retirar, pero no expone un listado GET de estas relaciones.
-                            const RELATIONSHIPS = [
-                              {
-                                key: "programaAreas", title: "Programa ↔ Área de conocimiento",
-                                description: "Asigna o retira un área de conocimiento de un programa.", route: "puente/programa-ac",
-                                fields: [
-                                  { key: "idPadre", label: "Programa", type: "select", source: "programas", required: true },
-                                  { key: "idHijo", label: "Área de conocimiento", type: "select", source: "areasConocimiento", required: true }
-                                ]
-                              },
-                              {
-                                key: "programaEstrategias", title: "Programa ↔ Práctica/Estrategia",
-                                description: "Asigna o retira una práctica o estrategia de un programa.", route: "puente/programa-pe",
-                                fields: [
-                                  { key: "idPadre", label: "Programa", type: "select", source: "programas", required: true },
-                                  { key: "idHijo", label: "Práctica/Estrategia", type: "select", source: "practicasEstrategias", required: true }
-                                ]
-                              },
-                              {
-                                key: "programaInnovacion", title: "Programa ↔ Característica de innovación",
-                                description: "Asigna o retira una característica de innovación de un programa.", route: "puente/programa-ci",
-                                fields: [
-                                  { key: "idPadre", label: "Programa", type: "select", source: "programas", required: true },
-                                  { key: "idHijo", label: "Característica de innovación", type: "select", source: "caracteristicasInnovacion", required: true }
-                                ]
-                              },
-                              {
-                                key: "aspectoPrograma", title: "Aspecto normativo ↔ Programa",
-                                description: "Asigna o retira un aspecto normativo de un programa.", route: "puente/an-programa",
-                                fields: [
-                                  { key: "idPadre", label: "Aspecto normativo", type: "select", source: "aspectosNormativos", required: true },
-                                  { key: "idHijo", label: "Programa", type: "select", source: "programas", required: true }
-                                ]
-                              }
-                            ];
+                                    // Relaciones de tablas puente: la API permite asignar y retirar, pero no expone un listado GET de estas relaciones.
+                                    const RELATIONSHIPS = [
+                                      {
+                                        key: "programaAreas", title: "Programa ↔ Área de conocimiento",
+                                        description: "Asigna o retira un área de conocimiento de un programa.", route: "puente/programa-ac",
+                                        fields: [
+                                          { key: "idPadre", label: "Programa", type: "select", source: "programas", required: true },
+                                          { key: "idHijo", label: "Área de conocimiento", type: "select", source: "areasConocimiento", required: true }
+                                        ]
+                                      },
+                                      {
+                                        key: "programaEstrategias", title: "Programa ↔ Práctica/Estrategia",
+                                        description: "Asigna o retira una práctica o estrategia de un programa.", route: "puente/programa-pe",
+                                        fields: [
+                                          { key: "idPadre", label: "Programa", type: "select", source: "programas", required: true },
+                                          { key: "idHijo", label: "Práctica/Estrategia", type: "select", source: "practicasEstrategias", required: true }
+                                        ]
+                                      },
+                                      {
+                                        key: "programaInnovacion", title: "Programa ↔ Característica de innovación",
+                                        description: "Asigna o retira una característica de innovación de un programa.", route: "puente/programa-ci",
+                                        fields: [
+                                          { key: "idPadre", label: "Programa", type: "select", source: "programas", required: true },
+                                          { key: "idHijo", label: "Característica de innovación", type: "select", source: "caracteristicasInnovacion", required: true }
+                                        ]
+                                      },
+                                      {
+                                        key: "aspectoPrograma", title: "Aspecto normativo ↔ Programa",
+                                        description: "Asigna o retira un aspecto normativo de un programa.", route: "puente/an-programa",
+                                        fields: [
+                                          { key: "idPadre", label: "Aspecto normativo", type: "select", source: "aspectosNormativos", required: true },
+                                          { key: "idHijo", label: "Programa", type: "select", source: "programas", required: true }
+                                        ]
+                                      },
+                                      {
+                                        key: "enfoqueRegistroCalificado", title: "Enfoque ↔ Registro calificado",
+                                        description: "Asigna o retira un enfoque metodológico de un registro calificado.", route: "puente/enfoque-rc",
+                                        fields: [
+                                          { key: "enfoqueId", label: "Enfoque", type: "select", source: "enfoques", required: true },
+                                          { key: "registroCalificadoCodigo", label: "Registro calificado", type: "select", source: "registrosCalificados", valueKey: "codigo", valueType: "string", required: true }
+                                        ]
+                                      },
+                                      {
+                                        key: "actividadRegistroCalificado", title: "Actividad académica ↔ Registro calificado",
+                                        description: "Relaciona una actividad académica con un registro calificado e incluye el componente y semestre opcionales.", route: "puente/aa-rc",
+                                        removeFields: ["activAcademicaId", "registroCalificadoCodigo"],
+                                        fields: [
+                                          { key: "activAcademicaId", label: "Actividad académica", type: "select", source: "actividadesAcademicas", required: true },
+                                          { key: "registroCalificadoCodigo", label: "Registro calificado", type: "select", source: "registrosCalificados", valueKey: "codigo", valueType: "string", required: true },
+                                          { key: "componente", label: "Componente (opcional)", nullable: true, maxLength: 100 },
+                                          { key: "semestre", label: "Semestre (opcional)", type: "number", nullable: true, min: 1 }
+                                        ]
+                                      }
+                                    ];
 
-                            const cache = Object.create(null);
-                            const loadErrors = Object.create(null);
-                            let currentEdit = null;
-                            let toastTimer = null;
+                                    const cache = Object.create(null);
+                                    const loadErrors = Object.create(null);
+                                    let currentEdit = null;
+                                    let toastTimer = null;
 
-                            function escapeHtml(value) {
-                              return String(value ?? "").replace(/[&<>"']/g, char => ({
-                                "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
-                              })[char]);
-                            }
+                                    function escapeHtml(value) {
+                                      return String(value ?? "").replace(/[&<>"']/g, char => ({
+                                        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+                                      })[char]);
+                                    }
 
-                            function fieldMap(module) {
-                              return Object.fromEntries(module.fields.map(field => [field.key, field]));
-                            }
+                                    function fieldMap(module) {
+                                      return Object.fromEntries(module.fields.map(field => [field.key, field]));
+                                    }
 
-                            function getField(module, key) {
-                              return fieldMap(module)[key] || { key, label: key };
-                            }
+                                    function getField(module, key) {
+                                      return fieldMap(module)[key] || { key, label: key };
+                                    }
 
-                            function renderField(module, field, prefix = "") {
-                              const id = `${prefix}${module.key}-${field.key}`;
-                              const required = field.required ? "required" : "";
-                              const maxLength = field.maxLength ? `maxlength="${field.maxLength}"` : "";
-                              const min = field.min !== undefined ? `min="${field.min}"` : "";
-                              const defaultValue = field.defaultValue !== undefined ? `value="${escapeHtml(field.defaultValue)}"` : "";
-                              if (field.type === "checkbox") {
-                                const checked = field.defaultValue ? "checked" : "";
-                                return `<div class="field full"><label class="check-field" for="${id}"><input id="${id}" name="${field.key}" type="checkbox" ${checked}><span>${escapeHtml(field.label)}</span></label></div>`;
-                              }
-                              let control = "";
-                              if (field.type === "select") {
-                                const valueKey = field.valueKey || "id";
-                                control = `<select id="${id}" name="${field.key}" data-source="${field.source}" data-value-key="${valueKey}" ${required}><option value="">-- Selecciona una opción --</option></select>`;
-                              } else if (field.type === "textarea") {
-                                control = `<textarea id="${id}" name="${field.key}" ${required} ${maxLength} placeholder="Escribe ${escapeHtml(field.label.toLowerCase())}"></textarea>`;
-                              } else {
-                                const type = field.type || "text";
-                                control = `<input id="${id}" name="${field.key}" type="${type}" ${required} ${maxLength} ${min} ${defaultValue} placeholder="${escapeHtml(field.placeholder || field.label)}">`;
-                              }
-                              return `<div class="field ${field.type === "textarea" ? "full" : ""}"><label for="${id}">${escapeHtml(field.label)}${field.required ? " *" : ""}</label>${control}</div>`;
-                            }
+                                    function renderField(module, field, prefix = "") {
+                                      const id = `${prefix}${module.key}-${field.key}`;
+                                      const required = field.required ? "required" : "";
+                                      const maxLength = field.maxLength ? `maxlength="${field.maxLength}"` : "";
+                                      const min = field.min !== undefined ? `min="${field.min}"` : "";
+                                      const defaultValue = field.defaultValue !== undefined ? `value="${escapeHtml(field.defaultValue)}"` : "";
+                                      if (field.type === "checkbox") {
+                                        const checked = field.defaultValue ? "checked" : "";
+                                        return `<div class="field full"><label class="check-field" for="${id}"><input id="${id}" name="${field.key}" type="checkbox" ${checked}><span>${escapeHtml(field.label)}</span></label></div>`;
+                                      }
+                                      let control = "";
+                                      if (field.type === "select") {
+                                        const valueKey = field.valueKey || "id";
+                                        control = `<select id="${id}" name="${field.key}" data-source="${field.source}" data-value-key="${valueKey}" ${required}><option value="">-- Selecciona una opción --</option></select>`;
+                                      } else if (field.type === "textarea") {
+                                        control = `<textarea id="${id}" name="${field.key}" ${required} ${maxLength} placeholder="Escribe ${escapeHtml(field.label.toLowerCase())}"></textarea>`;
+                                      } else {
+                                        const type = field.type || "text";
+                                        control = `<input id="${id}" name="${field.key}" type="${type}" ${required} ${maxLength} ${min} ${defaultValue} placeholder="${escapeHtml(field.placeholder || field.label)}">`;
+                                      }
+                                      return `<div class="field ${field.type === "textarea" ? "full" : ""}"><label for="${id}">${escapeHtml(field.label)}${field.required ? " *" : ""}</label>${control}</div>`;
+                                    }
 
-                            function renderModule(module) {
-                              const columns = module.columns.map(column => `<th>${escapeHtml(column.label)}</th>`).join("") + "<th>Acciones</th>";
-                              const initialOpen = module.open ? "open" : "";
-                              return `
-                                <section class="module" id="sec-${module.key}">
-                                  <details class="module-details" ${initialOpen}>
-                                    <summary>
-                                      <span><span class="summary-title">${escapeHtml(module.title)}</span><span class="summary-description">${escapeHtml(module.description)}</span></span>
-                                      <span id="count-${module.key}" class="count">Cargando…</span>
-                                    </summary>
-                                    <div class="module-body">
-                                      <div class="body-grid">
-                                        <div class="form-panel">
-                                          <h3>Crear registro</h3>
-                                          <p class="form-help">Los campos con * son obligatorios.</p>
-                                          <form id="create-${module.key}" data-module="${module.key}">
-                                            <div class="form-grid">${module.fields.map(field => renderField(module, field)).join("")}</div>
-                                            <div class="form-actions"><button class="btn btn-primary" type="submit">Guardar registro</button><button class="btn btn-secondary" type="reset">Limpiar</button></div>
+                                    function renderModule(module) {
+                                      const columns = module.columns.map(column => `<th>${escapeHtml(column.label)}</th>`).join("") + "<th>Acciones</th>";
+                                      const initialOpen = module.open ? "open" : "";
+                                      return `
+                                        <section class="module" id="sec-${module.key}">
+                                          <details class="module-details" ${initialOpen}>
+                                            <summary>
+                                              <span><span class="summary-title">${escapeHtml(module.title)}</span><span class="summary-description">${escapeHtml(module.description)}</span></span>
+                                              <span id="count-${module.key}" class="count">Cargando…</span>
+                                            </summary>
+                                            <div class="module-body">
+                                              <div class="body-grid">
+                                                <div class="form-panel">
+                                                  <h3>Crear registro</h3>
+                                                  <p class="form-help">Los campos con * son obligatorios.</p>
+                                                  <form id="create-${module.key}" data-module="${module.key}">
+                                                    <div class="form-grid">${module.fields.map(field => renderField(module, field)).join("")}</div>
+                                                    <div class="form-actions"><button class="btn btn-primary" type="submit">Guardar registro</button><button class="btn btn-secondary" type="reset">Limpiar</button></div>
+                                                  </form>
+                                                </div>
+                                                <div class="table-area">
+                                                  <div class="table-heading"><h3>Registros</h3><span class="table-hint">Datos recibidos desde la API</span></div>
+                                                  <div class="table-wrap"><table id="table-${module.key}"><thead><tr>${columns}</tr></thead><tbody><tr><td class="empty" colspan="${module.columns.length + 1}">Cargando registros…</td></tr></tbody></table></div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </details>
+                                        </section>`;
+                                    }
+
+                                    function renderNavigation() {
+                                      const nav = document.getElementById("moduleNav");
+                                      nav.innerHTML = MODULES.map(module => `<a href="#sec-${module.key}" data-target="sec-${module.key}">${escapeHtml(module.title)}</a>`).join("")
+                                        + `<a href="#sec-relaciones" data-target="sec-relaciones">Relaciones</a>`;
+                                      nav.querySelectorAll("a").forEach(link => link.addEventListener("click", () => {
+                                        const section = document.getElementById(link.dataset.target);
+                                        const details = section?.querySelector("details");
+                                        if (details) details.open = true;
+                                      }));
+                                    }
+
+                                    function renderModules() {
+                                      document.getElementById("moduleContainer").innerHTML = MODULES.map(renderModule).join("") + renderRelationships();
+                                      MODULES.forEach(module => {
+                                        const form = document.getElementById(`create-${module.key}`);
+                                        form.addEventListener("submit", event => createRecord(event, module));
+                                      });
+                                      RELATIONSHIPS.forEach(relation => {
+                                        const form = document.getElementById(`bridge-${relation.key}`);
+                                        form.addEventListener("submit", event => saveRelationship(event, relation, "POST"));
+                                        form.querySelector('[data-action="remove"]').addEventListener("click", () => saveRelationship(null, relation, "DELETE", form));
+                                      });
+                                    }
+
+                                    function renderRelationships() {
+                                      const cards = RELATIONSHIPS.map(relation => `
+                                        <article class="bridge-card">
+                                          <h3>${escapeHtml(relation.title)}</h3>
+                                          <p>${escapeHtml(relation.description)}</p>
+                                          <form id="bridge-${relation.key}">
+                                            <div class="form-grid">${relation.fields.map(field => renderField(relation, field, "bridge-")).join("")}</div>
+                                            <div class="form-actions">
+                                              <button class="btn btn-primary" type="submit" data-action="assign">Asignar</button>
+                                              <button class="btn btn-delete" type="button" data-action="remove">Retirar</button>
+                                            </div>
                                           </form>
-                                        </div>
-                                        <div class="table-area">
-                                          <div class="table-heading"><h3>Registros</h3><span class="table-hint">Datos recibidos desde la API</span></div>
-                                          <div class="table-wrap"><table id="table-${module.key}"><thead><tr>${columns}</tr></thead><tbody><tr><td class="empty" colspan="${module.columns.length + 1}">Cargando registros…</td></tr></tbody></table></div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </details>
-                                </section>`;
-                            }
+                                        </article>`).join("");
+                                      return `
+                                        <section class="module" id="sec-relaciones">
+                                          <details class="module-details">
+                                            <summary>
+                                              <span><span class="summary-title">Relaciones entre entidades</span><span class="summary-description">Gestiona las relaciones muchos-a-muchos expuestas por la API.</span></span>
+                                              <span class="count">6 relaciones</span>
+                                            </summary>
+                                            <div class="module-body">
+                                              <p class="form-help">Selecciona los dos registros y elige Asignar o Retirar. El backend no expone consultas para listar las relaciones actuales.</p>
+                                              <div class="bridge-grid">${cards}</div>
+                                            </div>
+                                          </details>
+                                        </section>`;
+                                    }
 
-                            function renderNavigation() {
-                              const nav = document.getElementById("moduleNav");
-                              nav.innerHTML = MODULES.map(module => `<a href="#sec-${module.key}" data-target="sec-${module.key}">${escapeHtml(module.title)}</a>`).join("")
-                                + `<a href="#sec-relaciones" data-target="sec-relaciones">Relaciones</a>`;
-                              nav.querySelectorAll("a").forEach(link => link.addEventListener("click", () => {
-                                const section = document.getElementById(link.dataset.target);
-                                const details = section?.querySelector("details");
-                                if (details) details.open = true;
-                              }));
-                            }
+                                    function showToast(message, isError = false) {
+                                      const toast = document.getElementById("toast");
+                                      toast.textContent = message;
+                                      toast.className = `toast show ${isError ? "error" : "success"}`;
+                                      clearTimeout(toastTimer);
+                                      toastTimer = setTimeout(() => { toast.className = "toast"; }, 5500);
+                                    }
 
-                            function renderModules() {
-                              document.getElementById("moduleContainer").innerHTML = MODULES.map(renderModule).join("") + renderRelationships();
-                              MODULES.forEach(module => {
-                                const form = document.getElementById(`create-${module.key}`);
-                                form.addEventListener("submit", event => createRecord(event, module));
-                              });
-                              RELATIONSHIPS.forEach(relation => {
-                                const form = document.getElementById(`bridge-${relation.key}`);
-                                form.addEventListener("submit", event => saveRelationship(event, relation, "POST"));
-                                form.querySelector('[data-action="remove"]').addEventListener("click", () => saveRelationship(null, relation, "DELETE", form));
-                              });
-                            }
+                                    async function parseResponse(response) {
+                                      const text = await response.text();
+                                      if (!text) return null;
+                                      try { return JSON.parse(text); } catch { return { rawText: text }; }
+                                    }
 
-                            function renderRelationships() {
-                              const cards = RELATIONSHIPS.map(relation => `
-                                <article class="bridge-card">
-                                  <h3>${escapeHtml(relation.title)}</h3>
-                                  <p>${escapeHtml(relation.description)}</p>
-                                  <form id="bridge-${relation.key}">
-                                    <div class="form-grid">${relation.fields.map(field => renderField(relation, field, "bridge-")).join("")}</div>
-                                    <div class="form-actions">
-                                      <button class="btn btn-primary" type="submit" data-action="assign">Asignar</button>
-                                      <button class="btn btn-delete" type="button" data-action="remove">Retirar</button>
-                                    </div>
-                                  </form>
-                                </article>`).join("");
-                              return `
-                                <section class="module" id="sec-relaciones">
-                                  <details class="module-details">
-                                    <summary>
-                                      <span><span class="summary-title">Relaciones entre entidades</span><span class="summary-description">Gestiona las relaciones muchos-a-muchos expuestas por la API.</span></span>
-                                      <span class="count">4 relaciones</span>
-                                    </summary>
-                                    <div class="module-body">
-                                      <p class="form-help">Selecciona los dos registros y elige Asignar o Retirar. El backend no expone consultas para listar las relaciones actuales.</p>
-                                      <div class="bridge-grid">${cards}</div>
-                                    </div>
-                                  </details>
-                                </section>`;
-                            }
+                                    function extractError(body, status) {
+                                      if (!body) return `La API respondió HTTP ${status}.`;
+                                      if (body.mensaje) return body.mensaje;
+                                      if (body.title) return body.title;
+                                      if (body.detail) return body.detail;
+                                      if (body.errors) return Object.values(body.errors).flat().join(" ");
+                                      if (body.rawText) return `HTTP ${status}: ${body.rawText.slice(0, 260)}`;
+                                      return `La API respondió HTTP ${status}: ${JSON.stringify(body).slice(0, 260)}`;
+                                    }
 
-                            function showToast(message, isError = false) {
-                              const toast = document.getElementById("toast");
-                              toast.textContent = message;
-                              toast.className = `toast show ${isError ? "error" : "success"}`;
-                              clearTimeout(toastTimer);
-                              toastTimer = setTimeout(() => { toast.className = "toast"; }, 5500);
-                            }
+                                    async function apiRequest(route, options = {}) {
+                                      let response;
+                                      try {
+                                        response = await fetch(`${API_BASE}/${route}`, options);
+                                      } catch (error) {
+                                        throw new Error(`No se pudo conectar con la API en ${API_BASE}. Comprueba que Docker esté iniciado. ${error.message}`);
+                                      }
+                                      const body = await parseResponse(response);
+                                      if (!response.ok) throw new Error(extractError(body, response.status));
+                                      return body;
+                                    }
 
-                            async function parseResponse(response) {
-                              const text = await response.text();
-                              if (!text) return null;
-                              try { return JSON.parse(text); } catch { return { rawText: text }; }
-                            }
+                                    function listFromResponse(body) {
+                                      if (Array.isArray(body)) return body;
+                                      if (body && Array.isArray(body.datos)) return body.datos;
+                                      if (body && Array.isArray(body.items)) return body.items;
+                                      return [];
+                                    }
 
-                            function extractError(body, status) {
-                              if (!body) return `La API respondió HTTP ${status}.`;
-                              if (body.mensaje) return body.mensaje;
-                              if (body.title) return body.title;
-                              if (body.detail) return body.detail;
-                              if (body.errors) return Object.values(body.errors).flat().join(" ");
-                              if (body.rawText) return `HTTP ${status}: ${body.rawText.slice(0, 260)}`;
-                              return `La API respondió HTTP ${status}: ${JSON.stringify(body).slice(0, 260)}`;
-                            }
+                                    async function loadCollection(module) {
+                                      try {
+                                        const response = await fetch(`${API_BASE}/${module.route}`);
+                                        if (response.status === 204) {
+                                          cache[module.key] = [];
+                                          delete loadErrors[module.key];
+                                          return;
+                                        }
+                                        const body = await parseResponse(response);
+                                        if (!response.ok) throw new Error(extractError(body, response.status));
+                                        cache[module.key] = listFromResponse(body);
+                                        delete loadErrors[module.key];
+                                      } catch (error) {
+                                        cache[module.key] = [];
+                                        loadErrors[module.key] = error.message;
+                                      }
+                                    }
 
-                            async function apiRequest(route, options = {}) {
-                              let response;
-                              try {
-                                response = await fetch(`${API_BASE}/${route}`, options);
-                              } catch (error) {
-                                throw new Error(`No se pudo conectar con la API en ${API_BASE}. Comprueba que Docker esté iniciado. ${error.message}`);
-                              }
-                              const body = await parseResponse(response);
-                              if (!response.ok) throw new Error(extractError(body, response.status));
-                              return body;
-                            }
+                                    function optionLabel(source, item) {
+                                      if (source === "universidades") return `${item.nombre ?? ""}${item.ciudad ? ` — ${item.ciudad}` : ""}`;
+                                      if (source === "facultades") return `${item.nombre ?? ""}${item.universidadNombre ? ` — ${item.universidadNombre}` : ""}`;
+                                      if (source === "programas") return `${item.nombre ?? ""}${item.facultadNombre ? ` — ${item.facultadNombre}` : ""}`;
+                                      if (source === "aliados") return `${item.razonSocial ?? item.nit ?? "Aliado"}${item.ciudad ? ` — ${item.ciudad}` : ""}`;
+                                      if (source === "areasConocimiento") return `${item.granArea ?? ""}${item.area ? ` — ${item.area}` : ""}${item.disciplina ? ` — ${item.disciplina}` : ""}`;
+                                      if (source === "aspectosNormativos") return `${item.tipo ?? "Aspecto normativo"}${item.descripcion ? ` — ${item.descripcion}` : ""}`;
+                                      if (source === "registrosCalificados") return `${item.codigo ?? "Registro calificado"}${item.programaNombre ? ` — ${item.programaNombre}` : ""}`;
+                                      if (source === "actividadesAcademicas") return `${item.nombre ?? "Actividad académica"}${item.programaNombre ? ` — ${item.programaNombre}` : ""}`;
+                                      if (source === "enfoques") return `${item.nombre ?? item.id ?? "Enfoque"}`;
+                                      return item.nombre ?? item.id ?? item.codigo ?? "Registro";
+                                    }
 
-                            function listFromResponse(body) {
-                              if (Array.isArray(body)) return body;
-                              if (body && Array.isArray(body.datos)) return body.datos;
-                              if (body && Array.isArray(body.items)) return body.items;
-                              return [];
-                            }
+                                    function populateSelects(container = document) {
+                                      container.querySelectorAll("select[data-source]").forEach(select => {
+                                        const source = select.dataset.source;
+                                        const currentValue = select.value;
+                                        const items = cache[source] || [];
+                                        select.innerHTML = "";
+                                        const first = document.createElement("option");
+                                        first.value = "";
+                                        first.textContent = items.length ? "-- Selecciona una opción --" : "No hay opciones disponibles";
+                                        select.appendChild(first);
+                                        const valueKey = select.dataset.valueKey || "id";
+                                        items.forEach(item => {
+                                          const option = document.createElement("option");
+                                          option.value = item[valueKey] ?? "";
+                                          option.textContent = optionLabel(source, item);
+                                          select.appendChild(option);
+                                        });
+                                        if ([...select.options].some(option => option.value === currentValue)) select.value = currentValue;
+                                      });
+                                    }
 
-                            async function loadCollection(module) {
-                              try {
-                                const response = await fetch(`${API_BASE}/${module.route}`);
-                                if (response.status === 204) {
-                                  cache[module.key] = [];
-                                  delete loadErrors[module.key];
-                                  return;
-                                }
-                                const body = await parseResponse(response);
-                                if (!response.ok) throw new Error(extractError(body, response.status));
-                                cache[module.key] = listFromResponse(body);
-                                delete loadErrors[module.key];
-                              } catch (error) {
-                                cache[module.key] = [];
-                                loadErrors[module.key] = error.message;
-                              }
-                            }
+                                    function cellText(record, column) {
+                                      let value = record[column.key];
+                                      if (value === null || value === undefined || value === "") return "—";
+                                      if (column.kind === "date") return String(value).split("T")[0];
+                                      if (column.kind === "status") return value ? "Activo" : "Inactivo";
+                                      if (column.kind === "yesno") return value ? "Sí" : "No";
+                                      return String(value);
+                                    }
 
-                            function optionLabel(source, item) {
-                              if (source === "universidades") return `${item.nombre ?? ""}${item.ciudad ? ` — ${item.ciudad}` : ""}`;
-                              if (source === "facultades") return `${item.nombre ?? ""}${item.universidadNombre ? ` — ${item.universidadNombre}` : ""}`;
-                              if (source === "programas") return `${item.nombre ?? ""}${item.facultadNombre ? ` — ${item.facultadNombre}` : ""}`;
-                              if (source === "aliados") return `${item.razonSocial ?? item.nit ?? "Aliado"}${item.ciudad ? ` — ${item.ciudad}` : ""}`;
-                              if (source === "areasConocimiento") return `${item.granArea ?? ""}${item.area ? ` — ${item.area}` : ""}${item.disciplina ? ` — ${item.disciplina}` : ""}`;
-                              if (source === "aspectosNormativos") return `${item.tipo ?? "Aspecto normativo"}${item.descripcion ? ` — ${item.descripcion}` : ""}`;
-                              return item.nombre ?? item.id ?? item.codigo ?? "Registro";
-                            }
+                                    function renderTable(module) {
+                                      const table = document.getElementById(`table-${module.key}`);
+                                      if (!table) return;
+                                      const tbody = table.querySelector("tbody");
+                                      tbody.replaceChildren();
+                                      const items = cache[module.key] || [];
+                                      const count = document.getElementById(`count-${module.key}`);
+                                      if (count) count.textContent = loadErrors[module.key] ? "Error" : `${items.length} registro${items.length === 1 ? "" : "s"}`;
 
-                            function populateSelects(container = document) {
-                              container.querySelectorAll("select[data-source]").forEach(select => {
-                                const source = select.dataset.source;
-                                const currentValue = select.value;
-                                const items = cache[source] || [];
-                                select.innerHTML = "";
-                                const first = document.createElement("option");
-                                first.value = "";
-                                first.textContent = items.length ? "-- Selecciona una opción --" : "No hay opciones disponibles";
-                                select.appendChild(first);
-                                const valueKey = select.dataset.valueKey || "id";
-                                items.forEach(item => {
-                                  const option = document.createElement("option");
-                                  option.value = item[valueKey] ?? "";
-                                  option.textContent = optionLabel(source, item);
-                                  select.appendChild(option);
-                                });
-                                if ([...select.options].some(option => option.value === currentValue)) select.value = currentValue;
-                              });
-                            }
+                                      if (loadErrors[module.key]) {
+                                        const tr = document.createElement("tr");
+                                        const td = document.createElement("td");
+                                        td.className = "load-error";
+                                        td.colSpan = module.columns.length + 1;
+                                        td.textContent = `No se pudo cargar: ${loadErrors[module.key]}`;
+                                        tr.appendChild(td);
+                                        tbody.appendChild(tr);
+                                        return;
+                                      }
+                                      if (!items.length) {
+                                        const tr = document.createElement("tr");
+                                        const td = document.createElement("td");
+                                        td.className = "empty";
+                                        td.colSpan = module.columns.length + 1;
+                                        td.textContent = "No hay registros activos para mostrar.";
+                                        tr.appendChild(td);
+                                        tbody.appendChild(tr);
+                                        return;
+                                      }
 
-                            function cellText(record, column) {
-                              let value = record[column.key];
-                              if (value === null || value === undefined || value === "") return "—";
-                              if (column.kind === "date") return String(value).split("T")[0];
-                              if (column.kind === "status") return value ? "Activo" : "Inactivo";
-                              if (column.kind === "yesno") return value ? "Sí" : "No";
-                              return String(value);
-                            }
+                                      items.forEach(record => {
+                                        const tr = document.createElement("tr");
+                                        module.columns.forEach(column => {
+                                          const td = document.createElement("td");
+                                          const text = cellText(record, column);
+                                          if (column.kind === "status") {
+                                            const pill = document.createElement("span");
+                                            pill.className = `pill ${record[column.key] ? "" : "off"}`;
+                                            pill.textContent = text;
+                                            td.appendChild(pill);
+                                          } else {
+                                            td.textContent = text;
+                                          }
+                                          tr.appendChild(td);
+                                        });
 
-                            function renderTable(module) {
-                              const table = document.getElementById(`table-${module.key}`);
-                              if (!table) return;
-                              const tbody = table.querySelector("tbody");
-                              tbody.replaceChildren();
-                              const items = cache[module.key] || [];
-                              const count = document.getElementById(`count-${module.key}`);
-                              if (count) count.textContent = loadErrors[module.key] ? "Error" : `${items.length} registro${items.length === 1 ? "" : "s"}`;
+                                        const actions = document.createElement("td");
+                                        const actionGroup = document.createElement("div");
+                                        actionGroup.className = "actions";
+                                        if (module.update) {
+                                          const editButton = document.createElement("button");
+                                          editButton.type = "button";
+                                          editButton.className = "btn btn-small btn-edit";
+                                          editButton.textContent = "Editar";
+                                          editButton.addEventListener("click", () => openEdit(module, record));
+                                          actionGroup.appendChild(editButton);
+                                        }
+                                        if (module.deleteLabel) {
+                                          const deleteButton = document.createElement("button");
+                                          deleteButton.type = "button";
+                                          deleteButton.className = "btn btn-small btn-delete";
+                                          deleteButton.textContent = module.deleteLabel;
+                                          deleteButton.addEventListener("click", () => deactivateRecord(module, record));
+                                          actionGroup.appendChild(deleteButton);
+                                        }
+                                        if (!module.update && !module.deleteLabel) actionGroup.textContent = "—";
+                                        actions.appendChild(actionGroup);
+                                        tr.appendChild(actions);
+                                        tbody.appendChild(tr);
+                                      });
+                                    }
 
-                              if (loadErrors[module.key]) {
-                                const tr = document.createElement("tr");
-                                const td = document.createElement("td");
-                                td.className = "load-error";
-                                td.colSpan = module.columns.length + 1;
-                                td.textContent = `No se pudo cargar: ${loadErrors[module.key]}`;
-                                tr.appendChild(td);
-                                tbody.appendChild(tr);
-                                return;
-                              }
-                              if (!items.length) {
-                                const tr = document.createElement("tr");
-                                const td = document.createElement("td");
-                                td.className = "empty";
-                                td.colSpan = module.columns.length + 1;
-                                td.textContent = "No hay registros activos para mostrar.";
-                                tr.appendChild(td);
-                                tbody.appendChild(tr);
-                                return;
-                              }
+                                    function readPayload(form, fields) {
+                                      const payload = {};
+                                      fields.forEach(field => {
+                                        const control = form.elements.namedItem(field.key);
+                                        if (!control) return;
+                                        if (field.type === "checkbox") {
+                                          payload[field.key] = control.checked;
+                                          return;
+                                        }
+                                        const raw = control.value;
+                                        if (field.type === "number") {
+                                          payload[field.key] = raw === "" ? (field.nullable ? null : null) : Number(raw);
+                                        } else if (field.type === "date") {
+                                          payload[field.key] = raw || null;
+                                        } else if (field.type === "select") {
+                                          payload[field.key] = raw === "" ? null : (field.valueType === "string" ? raw : Number(raw));
+                                        } else {
+                                          const value = raw.trim();
+                                          payload[field.key] = field.nullable && value === "" ? null : value;
+                                        }
+                                      });
+                                      return payload;
+                                    }
 
-                              items.forEach(record => {
-                                const tr = document.createElement("tr");
-                                module.columns.forEach(column => {
-                                  const td = document.createElement("td");
-                                  const text = cellText(record, column);
-                                  if (column.kind === "status") {
-                                    const pill = document.createElement("span");
-                                    pill.className = `pill ${record[column.key] ? "" : "off"}`;
-                                    pill.textContent = text;
-                                    td.appendChild(pill);
-                                  } else {
-                                    td.textContent = text;
-                                  }
-                                  tr.appendChild(td);
-                                });
+                                    async function createRecord(event, module) {
+                                      event.preventDefault();
+                                      const form = event.currentTarget;
+                                      const payload = readPayload(form, module.fields);
+                                      try {
+                                        await apiRequest(module.route, {
+                                          method: "POST",
+                                          headers: { "Content-Type": "application/json" },
+                                          body: JSON.stringify(payload)
+                                        });
+                                        form.reset();
+                                        showToast(`${module.title}: registro creado correctamente.`);
+                                        await refreshAll();
+                                      } catch (error) {
+                                        console.error(`Error creando ${module.title}:`, error);
+                                        showToast(`No se pudo crear en ${module.title}. ${error.message}`, true);
+                                      }
+                                    }
 
-                                const actions = document.createElement("td");
-                                const actionGroup = document.createElement("div");
-                                actionGroup.className = "actions";
-                                if (module.update) {
-                                  const editButton = document.createElement("button");
-                                  editButton.type = "button";
-                                  editButton.className = "btn btn-small btn-edit";
-                                  editButton.textContent = "Editar";
-                                  editButton.addEventListener("click", () => openEdit(module, record));
-                                  actionGroup.appendChild(editButton);
-                                }
-                                if (module.deleteLabel) {
-                                  const deleteButton = document.createElement("button");
-                                  deleteButton.type = "button";
-                                  deleteButton.className = "btn btn-small btn-delete";
-                                  deleteButton.textContent = module.deleteLabel;
-                                  deleteButton.addEventListener("click", () => deactivateRecord(module, record));
-                                  actionGroup.appendChild(deleteButton);
-                                }
-                                if (!module.update && !module.deleteLabel) actionGroup.textContent = "—";
-                                actions.appendChild(actionGroup);
-                                tr.appendChild(actions);
-                                tbody.appendChild(tr);
-                              });
-                            }
+                                    function openEdit(module, record) {
+                                      if (!module.update) return;
+                                      currentEdit = { module, record };
+                                      const fields = module.update.fields.map(key => getField(module, key));
+                                      document.getElementById("editTitle").textContent = `Editar: ${module.title}`;
+                                      const editFields = document.getElementById("editFields");
+                                      editFields.innerHTML = fields.map(field => renderField(module, field, "edit-")).join("");
+                                      populateSelects(editFields);
+                                      fields.forEach(field => {
+                                        const control = document.getElementById(`edit-${module.key}-${field.key}`);
+                                        const value = record[field.key];
+                                        if (!control) return;
+                                        if (field.type === "checkbox") control.checked = Boolean(value);
+                                        else if (field.type === "date") control.value = value ? String(value).slice(0, 10) : "";
+                                        else control.value = value ?? "";
+                                      });
+                                      const dialog = document.getElementById("editDialog");
+                                      if (typeof dialog.showModal === "function") dialog.showModal();
+                                      else dialog.setAttribute("open", "open");
+                                    }
 
-                            function readPayload(form, fields) {
-                              const payload = {};
-                              fields.forEach(field => {
-                                const control = form.elements.namedItem(field.key);
-                                if (!control) return;
-                                if (field.type === "checkbox") {
-                                  payload[field.key] = control.checked;
-                                  return;
-                                }
-                                const raw = control.value;
-                                if (field.type === "number") {
-                                  payload[field.key] = raw === "" ? (field.nullable ? null : null) : Number(raw);
-                                } else if (field.type === "date") {
-                                  payload[field.key] = raw || null;
-                                } else if (field.type === "select") {
-                                  payload[field.key] = raw === "" ? null : (field.valueType === "string" ? raw : Number(raw));
-                                } else {
-                                  const value = raw.trim();
-                                  payload[field.key] = field.nullable && value === "" ? null : value;
-                                }
-                              });
-                              return payload;
-                            }
+                                    document.getElementById("editForm").addEventListener("submit", async event => {
+                                      event.preventDefault();
+                                      if (!currentEdit) return;
+                                      const { module, record } = currentEdit;
+                                      const fields = module.update.fields.map(key => getField(module, key));
+                                      const payload = readPayload(event.currentTarget, fields);
+                                      const key = encodeURIComponent(record[module.primaryKey]);
+                                      try {
+                                        await apiRequest(`${module.route}/${key}`, {
+                                          method: module.update.method,
+                                          headers: { "Content-Type": "application/json" },
+                                          body: JSON.stringify(payload)
+                                        });
+                                        document.getElementById("editDialog").close();
+                                        currentEdit = null;
+                                        showToast(`${module.title}: registro actualizado correctamente.`);
+                                        await refreshAll();
+                                      } catch (error) {
+                                        console.error(`Error actualizando ${module.title}:`, error);
+                                        showToast(`No se pudo actualizar. ${error.message}`, true);
+                                      }
+                                    });
 
-                            async function createRecord(event, module) {
-                              event.preventDefault();
-                              const form = event.currentTarget;
-                              const payload = readPayload(form, module.fields);
-                              try {
-                                await apiRequest(module.route, {
-                                  method: "POST",
-                                  headers: { "Content-Type": "application/json" },
-                                  body: JSON.stringify(payload)
-                                });
-                                form.reset();
-                                showToast(`${module.title}: registro creado correctamente.`);
-                                await refreshAll();
-                              } catch (error) {
-                                console.error(`Error creando ${module.title}:`, error);
-                                showToast(`No se pudo crear en ${module.title}. ${error.message}`, true);
-                              }
-                            }
+                                    document.getElementById("cancelEdit").addEventListener("click", () => {
+                                      document.getElementById("editDialog").close();
+                                      currentEdit = null;
+                                    });
 
-                            function openEdit(module, record) {
-                              if (!module.update) return;
-                              currentEdit = { module, record };
-                              const fields = module.update.fields.map(key => getField(module, key));
-                              document.getElementById("editTitle").textContent = `Editar: ${module.title}`;
-                              const editFields = document.getElementById("editFields");
-                              editFields.innerHTML = fields.map(field => renderField(module, field, "edit-")).join("");
-                              populateSelects(editFields);
-                              fields.forEach(field => {
-                                const control = document.getElementById(`edit-${module.key}-${field.key}`);
-                                const value = record[field.key];
-                                if (!control) return;
-                                if (field.type === "checkbox") control.checked = Boolean(value);
-                                else if (field.type === "date") control.value = value ? String(value).slice(0, 10) : "";
-                                else control.value = value ?? "";
-                              });
-                              const dialog = document.getElementById("editDialog");
-                              if (typeof dialog.showModal === "function") dialog.showModal();
-                              else dialog.setAttribute("open", "open");
-                            }
+                                    async function deactivateRecord(module, record) {
+                                      const keyValue = record[module.primaryKey];
+                                      const confirmation = module.deleteLabel === "Retirar alianza"
+                                        ? `¿Deseas retirar la alianza "${keyValue}"?`
+                                        : `¿Deseas inactivar el registro "${keyValue}" de ${module.title}?`;
+                                      if (!confirm(confirmation)) return;
+                                      const key = encodeURIComponent(keyValue);
+                                      try {
+                                        await apiRequest(`${module.route}/${key}`, { method: "DELETE" });
+                                        showToast(`${module.title}: operación completada.`);
+                                        await refreshAll();
+                                      } catch (error) {
+                                        console.error(`Error inactivando ${module.title}:`, error);
+                                        showToast(`No se pudo inactivar el registro. ${error.message}`, true);
+                                      }
+                                    }
 
-                            document.getElementById("editForm").addEventListener("submit", async event => {
-                              event.preventDefault();
-                              if (!currentEdit) return;
-                              const { module, record } = currentEdit;
-                              const fields = module.update.fields.map(key => getField(module, key));
-                              const payload = readPayload(event.currentTarget, fields);
-                              const key = encodeURIComponent(record[module.primaryKey]);
-                              try {
-                                await apiRequest(`${module.route}/${key}`, {
-                                  method: module.update.method,
-                                  headers: { "Content-Type": "application/json" },
-                                  body: JSON.stringify(payload)
-                                });
-                                document.getElementById("editDialog").close();
-                                currentEdit = null;
-                                showToast(`${module.title}: registro actualizado correctamente.`);
-                                await refreshAll();
-                              } catch (error) {
-                                console.error(`Error actualizando ${module.title}:`, error);
-                                showToast(`No se pudo actualizar. ${error.message}`, true);
-                              }
-                            });
+                                    async function saveRelationship(event, relation, method, suppliedForm = null) {
+                                      if (event) event.preventDefault();
+                                      const form = suppliedForm || event?.currentTarget;
+                                      if (!form) return;
+                                      const formPayload = readPayload(form, relation.fields);
+                                      const missingField = relation.fields.find(field => field.required && (
+                                        formPayload[field.key] === null || formPayload[field.key] === undefined || formPayload[field.key] === ""
+                                      ));
+                                      if (missingField) {
+                                        showToast(`Selecciona o completa el campo "${missingField.label}".`, true);
+                                        return;
+                                      }
+                                      // Algunas relaciones tienen metadatos adicionales al asignarse; para retirarlas basta con las dos claves foráneas.
+                                      const payload = method === "DELETE" && relation.removeFields
+                                        ? Object.fromEntries(relation.removeFields.map(key => [key, formPayload[key]]))
+                                        : formPayload;
+                                      const action = method === "DELETE" ? "retirar" : "asignar";
+                                      if (method === "DELETE" && !confirm(`¿Deseas retirar esta relación: ${relation.title}?`)) return;
+                                      try {
+                                        await apiRequest(relation.route, {
+                                          method,
+                                          headers: { "Content-Type": "application/json" },
+                                          body: JSON.stringify(payload)
+                                        });
+                                        showToast(method === "DELETE" ? "Relación retirada correctamente." : "Relación asignada correctamente.");
+                                        if (method === "POST") form.reset();
+                                        populateSelects();
+                                      } catch (error) {
+                                        console.error(`Error al ${action} relación ${relation.title}:`, error);
+                                        showToast(`No se pudo ${action} la relación. ${error.message}`, true);
+                                      }
+                                    }
 
-                            document.getElementById("cancelEdit").addEventListener("click", () => {
-                              document.getElementById("editDialog").close();
-                              currentEdit = null;
-                            });
+                                    async function refreshAll() {
+                                      await Promise.all(MODULES.map(loadCollection));
+                                      populateSelects();
+                                      MODULES.forEach(renderTable);
+                                      const okCount = MODULES.filter(module => !loadErrors[module.key]).length;
+                                      const status = document.getElementById("apiStatus");
+                                      status.classList.remove("ok", "bad");
+                                      const message = status.querySelector("span:last-child");
+                                      if (okCount === MODULES.length) {
+                                        status.classList.add("ok");
+                                        message.textContent = `API conectada · ${okCount}/${MODULES.length} recursos`;
+                                      } else if (okCount > 0) {
+                                        status.classList.add("ok");
+                                        message.textContent = `API parcial · ${okCount}/${MODULES.length} recursos disponibles`;
+                                      } else {
+                                        status.classList.add("bad");
+                                        message.textContent = "No se pudo consultar la API";
+                                      }
+                                    }
 
-                            async function deactivateRecord(module, record) {
-                              const keyValue = record[module.primaryKey];
-                              const confirmation = module.deleteLabel === "Retirar alianza"
-                                ? `¿Deseas retirar la alianza "${keyValue}"?`
-                                : `¿Deseas inactivar el registro "${keyValue}" de ${module.title}?`;
-                              if (!confirm(confirmation)) return;
-                              const key = encodeURIComponent(keyValue);
-                              try {
-                                await apiRequest(`${module.route}/${key}`, { method: "DELETE" });
-                                showToast(`${module.title}: operación completada.`);
-                                await refreshAll();
-                              } catch (error) {
-                                console.error(`Error inactivando ${module.title}:`, error);
-                                showToast(`No se pudo inactivar el registro. ${error.message}`, true);
-                              }
-                            }
-
-                            async function saveRelationship(event, relation, method, suppliedForm = null) {
-                              if (event) event.preventDefault();
-                              const form = suppliedForm || event?.currentTarget;
-                              if (!form) return;
-                              const payload = readPayload(form, relation.fields);
-                              if (payload.idPadre === null || payload.idHijo === null) {
-                                showToast("Selecciona los dos registros de la relación.", true);
-                                return;
-                              }
-                              const action = method === "DELETE" ? "retirar" : "asignar";
-                              if (method === "DELETE" && !confirm(`¿Deseas retirar esta relación: ${relation.title}?`)) return;
-                              try {
-                                await apiRequest(relation.route, {
-                                  method,
-                                  headers: { "Content-Type": "application/json" },
-                                  body: JSON.stringify(payload)
-                                });
-                                showToast(method === "DELETE" ? "Relación retirada correctamente." : "Relación asignada correctamente.");
-                                if (method === "POST") form.reset();
-                                populateSelects();
-                              } catch (error) {
-                                console.error(`Error al ${action} relación ${relation.title}:`, error);
-                                showToast(`No se pudo ${action} la relación. ${error.message}`, true);
-                              }
-                            }
-
-                            async function refreshAll() {
-                              await Promise.all(MODULES.map(loadCollection));
-                              populateSelects();
-                              MODULES.forEach(renderTable);
-                              const okCount = MODULES.filter(module => !loadErrors[module.key]).length;
-                              const status = document.getElementById("apiStatus");
-                              status.classList.remove("ok", "bad");
-                              const message = status.querySelector("span:last-child");
-                              if (okCount === MODULES.length) {
-                                status.classList.add("ok");
-                                message.textContent = `API conectada · ${okCount}/${MODULES.length} recursos`;
-                              } else if (okCount > 0) {
-                                status.classList.add("ok");
-                                message.textContent = `API parcial · ${okCount}/${MODULES.length} recursos disponibles`;
-                              } else {
-                                status.classList.add("bad");
-                                message.textContent = "No se pudo consultar la API";
-                              }
-                            }
-
-                            renderNavigation();
-                            renderModules();
-                            refreshAll();
+                                    renderNavigation();
+                                    renderModules();
+                                    refreshAll();
     </script>
 </body>
 </html>

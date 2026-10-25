@@ -36,16 +36,10 @@ builder.Services.AddScoped<IRepositorioAcreditacion, RepositorioAcreditacionSqlS
 builder.Services.AddScoped<IRepositorioRegistroCalificado, RepositorioRegistroCalificadoSqlServer>();
 builder.Services.AddScoped<IServicioRegistroCalificado, ServicioRegistroCalificado>();
 builder.Services.AddScoped<IRepositorioPasantia, RepositorioPasantiaSqlServer>();
-builder.Services.AddScoped<IServicioPasantia, ServicioPasantia>();
-
+builder.Services.AddScoped<IRepositorioActivAcademica, RepositorioActivAcademicaSqlServer>();
 builder.Services.AddScoped<IRepositorioPremio, RepositorioPremioSqlServer>();
-builder.Services.AddScoped<IServicioPremio, ServicioPremio>();
-
 builder.Services.AddScoped<IRepositorioDocenteDepartamento, RepositorioDocenteDepartamentoSqlServer>();
-builder.Services.AddScoped<IServicioDocenteDepartamento, ServicioDocenteDepartamento>();
-
 builder.Services.AddScoped<IRepositorioAlianza, RepositorioAlianzaSqlServer>();
-builder.Services.AddScoped<IServicioAlianza, ServicioAlianza>();
 
 // Tablas Puente
 builder.Services.AddScoped<IRepositorioTablaPuente, RepositorioTablaPuenteSqlServer>();
@@ -61,22 +55,13 @@ builder.Services.AddScoped<IServicioCarInnovacion, ServicioCarInnovacion>();
 builder.Services.AddScoped<IServicioFacultad, ServicioFacultad>();
 builder.Services.AddScoped<IServicioPrograma, ServicioPrograma>();
 builder.Services.AddScoped<IServicioAcreditacion, ServicioAcreditacion>();
-builder.Services.AddScoped<IRepositorioActivAcademica, RepositorioActivAcademicaSqlServer>();
 builder.Services.AddScoped<IServicioActivAcademica, ServicioActivAcademica>();
-builder.Services.AddScoped<IRepositorioPasantia, RepositorioPasantiaSqlServer>();
 builder.Services.AddScoped<IServicioPasantia, ServicioPasantia>();
-
-builder.Services.AddScoped<IRepositorioPremio, RepositorioPremioSqlServer>();
 builder.Services.AddScoped<IServicioPremio, ServicioPremio>();
-
-builder.Services.AddScoped<IRepositorioDocenteDepartamento, RepositorioDocenteDepartamentoSqlServer>();
 builder.Services.AddScoped<IServicioDocenteDepartamento, ServicioDocenteDepartamento>();
-
-builder.Services.AddScoped<IRepositorioAlianza, RepositorioAlianzaSqlServer>();
 builder.Services.AddScoped<IServicioAlianza, ServicioAlianza>();
+builder.Services.AddScoped<IServicioTablaPuente, ServicioTablaPuente>();
 
-// 3. Tablas Puente (Relaciones N a M)
-builder.Services.AddScoped<IRepositorioTablaPuente, RepositorioTablaPuenteSqlServer>();
 
 var app = builder.Build();
 
