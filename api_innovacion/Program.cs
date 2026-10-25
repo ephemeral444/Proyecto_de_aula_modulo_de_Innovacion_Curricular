@@ -1,6 +1,9 @@
+using Dapper;
 using ApiInnovacion.Repositorios;
 using ApiInnovacion.Servicios;
 
+
+DefaultTypeMap.MatchNamesWithUnderscores = true;
 var builder = WebApplication.CreateBuilder(args);
 
 // Configuraci�n de CORS
@@ -29,6 +32,23 @@ builder.Services.AddScoped<IRepositorioEnfoque, RepositorioEnfoqueSqlServer>();
 builder.Services.AddScoped<IRepositorioCarInnovacion, RepositorioCarInnovacionSqlServer>();
 builder.Services.AddScoped<IRepositorioFacultad, RepositorioFacultadSqlServer>();
 builder.Services.AddScoped<IRepositorioPrograma, RepositorioProgramaSqlServer>();
+builder.Services.AddScoped<IRepositorioAcreditacion, RepositorioAcreditacionSqlServer>();
+builder.Services.AddScoped<IRepositorioRegistroCalificado, RepositorioRegistroCalificadoSqlServer>();
+builder.Services.AddScoped<IServicioRegistroCalificado, ServicioRegistroCalificado>();
+builder.Services.AddScoped<IRepositorioPasantia, RepositorioPasantiaSqlServer>();
+builder.Services.AddScoped<IServicioPasantia, ServicioPasantia>();
+
+builder.Services.AddScoped<IRepositorioPremio, RepositorioPremioSqlServer>();
+builder.Services.AddScoped<IServicioPremio, ServicioPremio>();
+
+builder.Services.AddScoped<IRepositorioDocenteDepartamento, RepositorioDocenteDepartamentoSqlServer>();
+builder.Services.AddScoped<IServicioDocenteDepartamento, ServicioDocenteDepartamento>();
+
+builder.Services.AddScoped<IRepositorioAlianza, RepositorioAlianzaSqlServer>();
+builder.Services.AddScoped<IServicioAlianza, ServicioAlianza>();
+
+// Tablas Puente
+builder.Services.AddScoped<IRepositorioTablaPuente, RepositorioTablaPuenteSqlServer>();
 
 // 2. Servicios
 builder.Services.AddScoped<IServicioUniversidad, ServicioUniversidad>();
@@ -40,6 +60,23 @@ builder.Services.AddScoped<IServicioEnfoque, ServicioEnfoque>();
 builder.Services.AddScoped<IServicioCarInnovacion, ServicioCarInnovacion>();
 builder.Services.AddScoped<IServicioFacultad, ServicioFacultad>();
 builder.Services.AddScoped<IServicioPrograma, ServicioPrograma>();
+builder.Services.AddScoped<IServicioAcreditacion, ServicioAcreditacion>();
+builder.Services.AddScoped<IRepositorioActivAcademica, RepositorioActivAcademicaSqlServer>();
+builder.Services.AddScoped<IServicioActivAcademica, ServicioActivAcademica>();
+builder.Services.AddScoped<IRepositorioPasantia, RepositorioPasantiaSqlServer>();
+builder.Services.AddScoped<IServicioPasantia, ServicioPasantia>();
+
+builder.Services.AddScoped<IRepositorioPremio, RepositorioPremioSqlServer>();
+builder.Services.AddScoped<IServicioPremio, ServicioPremio>();
+
+builder.Services.AddScoped<IRepositorioDocenteDepartamento, RepositorioDocenteDepartamentoSqlServer>();
+builder.Services.AddScoped<IServicioDocenteDepartamento, ServicioDocenteDepartamento>();
+
+builder.Services.AddScoped<IRepositorioAlianza, RepositorioAlianzaSqlServer>();
+builder.Services.AddScoped<IServicioAlianza, ServicioAlianza>();
+
+// 3. Tablas Puente (Relaciones N a M)
+builder.Services.AddScoped<IRepositorioTablaPuente, RepositorioTablaPuenteSqlServer>();
 
 var app = builder.Build();
 

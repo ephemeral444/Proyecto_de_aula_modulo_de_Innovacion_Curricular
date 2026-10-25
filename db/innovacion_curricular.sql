@@ -110,6 +110,7 @@ BEGIN
 END
 GO
 
+
 -- Inserción inicial de semillas para validación de la v1
 INSERT INTO dbo.universidad (id, nombre, tipo, ciudad, activo) VALUES 
 (1, 'Institucion Universitaria ITM', 'Principal', 'Medellin', 1),
