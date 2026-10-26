@@ -110,6 +110,7 @@ BEGIN
 END
 GO
 
+
 -- Inserción inicial de semillas para validación de la v1
 INSERT INTO dbo.universidad (id, nombre, tipo, ciudad, activo) VALUES 
 (1, 'Institucion Universitaria ITM', 'Principal', 'Medellin', 1),
@@ -121,3 +122,4 @@ INSERT INTO dbo.aliado (nit, razon_social, contacto, ciudad, activo) VALUES
 INSERT INTO dbo.area_conocimiento (id, gran_area, area, disciplina, activo) VALUES 
 (1, 'Ingenieria, Arquitectura y Urbanismo', 'Ingenieria de Sistemas', 'Ingenieria de Software', 1);
 GO
+

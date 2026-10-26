@@ -3,614 +3,1380 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Módulo de Innovación Curricular — Gestión</title>
+    <meta name="theme-color" content="#102b46">
+    <title>Innovación Curricular | Gestión</title>
     <style>
         :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --text-color: #f8fafc;
-            --muted-text: #94a3b8;
-            --primary: #38bdf8;
-            --primary-hover: #0284c7;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --warning-hover: #d97706;
-            --success: #22c55e;
-            --border: #334155;
+            --navy: #102b46;
+            --navy-2: #173e5d;
+            --blue: #2869a6;
+            --blue-light: #eaf3fb;
+            --green: #16845b;
+            --red: #b93838;
+            --ink: #182b3a;
+            --muted: #667787;
+            --line: #dce5ec;
+            --surface: #ffffff;
+            --background: #f2f6f9;
+            --shadow: 0 8px 28px rgba(19, 48, 72, .08);
         }
 
         * {
             box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            padding: 2rem 1rem;
+            margin: 0;
+            color: var(--ink);
+            background: var(--background);
+            font-family: Inter, "Segoe UI", Arial, sans-serif;
+            line-height: 1.45;
+        }
+
+        .hero {
+            padding: 30px max(22px, calc((100vw - 1440px)/2));
+            color: #fff;
+            background: linear-gradient(120deg, var(--navy), #1c5276);
+        }
+
+        .hero-row {
             display: flex;
-            flex-direction: column;
             align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+            max-width: 1440px;
+            margin: auto;
         }
 
-        .container {
-            width: 100%;
-            max-width: 1100px;
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-
-        header {
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 1rem;
+        .eyebrow {
+            margin: 0 0 7px;
+            color: #bcd9ee;
+            font-size: .76rem;
+            letter-spacing: .15em;
+            text-transform: uppercase;
+            font-weight: 700;
         }
 
         h1 {
-            font-size: 1.8rem;
-            color: var(--primary);
+            margin: 0;
+            font-size: clamp(1.7rem, 3vw, 2.55rem);
+            letter-spacing: -.025em;
         }
 
-        p.subtitle {
-            color: var(--muted-text);
-            font-size: 0.95rem;
+        .subtitle {
+            max-width: 800px;
+            color: #dceaf5;
+            margin: 10px 0 0;
         }
 
-        .alert {
-            padding: 1rem;
-            border-radius: 6px;
-            display: none;
-            font-weight: 500;
+        .api-status {
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            background: rgba(255,255,255,.11);
+            border: 1px solid rgba(255,255,255,.18);
+            padding: 10px 14px;
+            border-radius: 999px;
+            font-size: .84rem;
         }
 
-        .alert-error {
-            background-color: rgba(239, 68, 68, 0.15);
-            border: 1px solid var(--danger);
-            color: #fca5a5;
+        .status-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: #f0bd55;
+            display: inline-block;
         }
 
-        .alert-warning {
-            background-color: rgba(245, 158, 11, 0.15);
-            border: 1px solid var(--warning);
-            color: #fcd34d;
+        .api-status.ok .status-dot {
+            background: #58dda1;
         }
 
-        .controls {
+        .api-status.bad .status-dot {
+            background: #ff8989;
+        }
+
+        .shell {
+            max-width: 1440px;
+            margin: 20px auto 56px;
+            padding: 0 22px;
+        }
+
+        .nav-wrap {
+            position: sticky;
+            top: 0;
+            z-index: 5;
+            background: rgba(242,246,249,.94);
+            backdrop-filter: blur(12px);
+            padding: 10px 0 15px;
+        }
+
+        .nav {
             display: flex;
             flex-wrap: wrap;
-            gap: 1rem;
-            align-items: center;
-            justify-content: space-between;
-            background-color: var(--card-bg);
-            padding: 1rem;
-            border-radius: 8px;
-            border: 1px solid var(--border);
+            gap: 8px;
         }
 
-        select, button, input {
-            padding: 0.6rem 1rem;
-            border-radius: 6px;
-            border: 1px solid var(--border);
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-size: 0.95rem;
-            outline: none;
-        }
-
-            select:focus, input:focus {
-                border-color: var(--primary);
+            .nav a {
+                display: inline-flex;
+                text-decoration: none;
+                color: #274861;
+                background: #fff;
+                border: 1px solid var(--line);
+                border-radius: 999px;
+                padding: 8px 12px;
+                font-size: .84rem;
+                font-weight: 650;
+                transition: .15s ease;
             }
+
+                .nav a:hover {
+                    color: var(--blue);
+                    border-color: #88b7d8;
+                    background: var(--blue-light);
+                }
+
+        .intro {
+            display: flex;
+            align-items: end;
+            justify-content: space-between;
+            gap: 20px;
+            margin: 10px 0 18px;
+        }
+
+            .intro h2 {
+                margin: 0;
+                color: var(--navy);
+                font-size: 1.25rem;
+            }
+
+            .intro p {
+                margin: 5px 0 0;
+                color: var(--muted);
+                font-size: .93rem;
+            }
+
+        .module {
+            scroll-margin-top: 95px;
+            margin: 0 0 14px;
+        }
+
+        details.module-details {
+            overflow: hidden;
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+        }
+
+            details.module-details > summary {
+                cursor: pointer;
+                list-style: none;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 16px;
+                padding: 18px 21px;
+            }
+
+                details.module-details > summary::-webkit-details-marker {
+                    display: none;
+                }
+
+                details.module-details > summary::after {
+                    content: "＋";
+                    color: var(--blue);
+                    font-size: 1.25rem;
+                    font-weight: 500;
+                }
+
+            details.module-details[open] > summary::after {
+                content: "−";
+            }
+
+        .summary-title {
+            display: block;
+            color: var(--navy);
+            font-size: 1.06rem;
+            font-weight: 760;
+        }
+
+        .summary-description {
+            display: block;
+            margin-top: 4px;
+            color: var(--muted);
+            font-size: .86rem;
+            font-weight: 400;
+        }
+
+        .count {
+            flex: 0 0 auto;
+            color: #315a77;
+            background: #edf4f8;
+            padding: 5px 10px;
+            border-radius: 999px;
+            font-size: .8rem;
+            font-weight: 700;
+        }
+
+        .module-body {
+            border-top: 1px solid var(--line);
+            padding: 21px;
+        }
+
+        .body-grid {
+            display: grid;
+            grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
+            gap: 22px;
+            align-items: start;
+        }
+
+        .form-panel {
+            background: #f8fafc;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 17px;
+        }
+
+            .form-panel h3 {
+                margin: 0 0 5px;
+                font-size: 1rem;
+                color: var(--navy);
+            }
+
+        .form-help {
+            margin: 0 0 15px;
+            color: var(--muted);
+            font-size: .84rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0,1fr));
+            gap: 13px;
+        }
+
+        .field {
+            min-width: 0;
+        }
+
+            .field.full {
+                grid-column: 1 / -1;
+            }
+
+            .field label {
+                display: block;
+                margin-bottom: 6px;
+                color: #30485b;
+                font-size: .82rem;
+                font-weight: 700;
+            }
+
+        input, select, textarea {
+            width: 100%;
+            min-width: 0;
+            padding: 10px 11px;
+            border: 1px solid #cbd7e0;
+            border-radius: 8px;
+            background: #fff;
+            color: var(--ink);
+            font: inherit;
+            font-size: .9rem;
+        }
+
+            input:focus, select:focus, textarea:focus {
+                outline: 3px solid rgba(40,105,166,.15);
+                border-color: #5b9aca;
+            }
+
+        textarea {
+            min-height: 82px;
+            resize: vertical;
+        }
+
+        .check-field {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 9px 0;
+            color: #30485b;
+            font-size: .9rem;
+            font-weight: 650;
+        }
+
+            .check-field input {
+                width: 17px;
+                height: 17px;
+            }
+
+        .form-actions {
+            display: flex;
+            gap: 9px;
+            margin-top: 16px;
+        }
 
         button {
+            font: inherit;
             cursor: pointer;
-            font-weight: 600;
-            transition: background-color 0.2s, color 0.2s;
         }
 
-            button.btn-primary {
-                background-color: var(--primary);
-                color: #0f172a;
-                border: none;
-            }
-
-                button.btn-primary:hover {
-                    background-color: var(--primary-hover);
-                }
-
-            button.btn-warning {
-                background-color: transparent;
-                border: 1px solid var(--warning);
-                color: var(--warning);
-            }
-
-                button.btn-warning:hover {
-                    background-color: var(--warning);
-                    color: #0f172a;
-                }
-
-            button.btn-danger {
-                background-color: transparent;
-                border: 1px solid var(--danger);
-                color: var(--danger);
-            }
-
-                button.btn-danger:hover {
-                    background-color: var(--danger);
-                    color: white;
-                }
-
-        .table-container {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border);
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 0;
             border-radius: 8px;
-            overflow-x: auto;
+            padding: 10px 13px;
+            font-size: .86rem;
+            font-weight: 750;
+            transition: filter .15s ease, transform .1s ease;
+        }
+
+            .btn:hover {
+                filter: brightness(.96);
+            }
+
+            .btn:active {
+                transform: translateY(1px);
+            }
+
+        .btn-primary {
+            flex: 1;
+            background: var(--green);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #e8eef3;
+            color: #29465c;
+        }
+
+        .btn-small {
+            padding: 6px 9px;
+            font-size: .77rem;
+            white-space: nowrap;
+        }
+
+        .btn-edit {
+            color: #1d5b8a;
+            background: #e9f3fb;
+        }
+
+        .btn-delete {
+            color: #9c3030;
+            background: #fff0f0;
+        }
+
+        .bridge-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .bridge-card {
+            min-width: 0;
+            padding: 17px;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: #f8fafc;
+        }
+
+            .bridge-card h3 {
+                margin: 0 0 5px;
+                color: var(--navy);
+                font-size: 1rem;
+            }
+
+            .bridge-card p {
+                margin: 0 0 14px;
+                color: var(--muted);
+                font-size: .84rem;
+            }
+
+            .bridge-card .form-actions {
+                flex-wrap: wrap;
+            }
+
+            .bridge-card .btn-delete {
+                flex: 1;
+            }
+
+        .table-area {
+            min-width: 0;
+        }
+
+        .table-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 9px;
+        }
+
+            .table-heading h3 {
+                margin: 0;
+                color: var(--navy);
+                font-size: 1rem;
+            }
+
+        .table-hint {
+            color: var(--muted);
+            font-size: .8rem;
+        }
+
+        .table-wrap {
+            overflow: auto;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            background: #fff;
         }
 
         table {
-            width: 100%;
             border-collapse: collapse;
-            text-align: left;
+            width: 100%;
+            min-width: 570px;
+            font-size: .86rem;
         }
 
         th, td {
-            padding: 0.85rem 1rem;
-            border-bottom: 1px solid var(--border);
+            padding: 11px 12px;
+            border-bottom: 1px solid #e8edf1;
+            text-align: left;
+            vertical-align: top;
         }
 
         th {
-            background-color: rgba(15, 23, 42, 0.5);
-            color: var(--muted-text);
-            font-size: 0.85rem;
+            background: #f0f5f8;
+            color: #355268;
+            font-size: .76rem;
             text-transform: uppercase;
+            letter-spacing: .04em;
+            white-space: nowrap;
         }
 
-        tr:last-child td {
-            border-bottom: none;
+        tbody tr:last-child td {
+            border-bottom: 0;
         }
 
-        .status-badge {
+        tbody tr:hover {
+            background: #fafcfe;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .pill {
             display: inline-block;
-            padding: 0.2rem 0.6rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            background-color: rgba(34, 197, 94, 0.2);
-            color: var(--success);
+            border-radius: 999px;
+            background: #e7f6ee;
+            color: #176342;
+            padding: 3px 8px;
+            font-size: .75rem;
+            font-weight: 750;
         }
 
-        .empty-state {
-            text-align: center;
-            padding: 3rem 1rem;
-            color: var(--muted-text);
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        /* Modal */
-        .modal-backdrop {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.7);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-            z-index: 50;
-        }
-
-        .modal {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            max-width: 500px;
-            width: 100%;
-            padding: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 0.5rem;
-        }
-
-        .modal-body {
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.3rem;
-        }
-
-            .form-group label {
-                font-size: 0.85rem;
-                color: var(--muted-text);
+            .pill.off {
+                background: #f2f4f6;
+                color: #64717c;
             }
 
-        .modal-footer {
+        .empty {
+            color: var(--muted);
+            text-align: center;
+            padding: 24px 12px !important;
+        }
+
+        .load-error {
+            color: var(--red);
+            text-align: center;
+            padding: 20px 12px !important;
+        }
+
+        .footer {
+            color: var(--muted);
+            font-size: .83rem;
+            text-align: center;
+            padding: 15px 0 0;
+        }
+
+        .toast {
+            position: fixed;
+            right: 22px;
+            bottom: 22px;
+            max-width: min(560px, calc(100vw - 44px));
+            z-index: 20;
+            display: none;
+            padding: 14px 17px;
+            border-radius: 10px;
+            color: #fff;
+            box-shadow: 0 10px 30px rgba(0,0,0,.18);
+            font-size: .92rem;
+        }
+
+            .toast.show {
+                display: block;
+            }
+
+            .toast.success {
+                background: #176947;
+            }
+
+            .toast.error {
+                background: #a72d36;
+            }
+
+        dialog {
+            width: min(720px, calc(100vw - 28px));
+            max-height: 90vh;
+            overflow: auto;
+            padding: 0;
+            border: 0;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,.25);
+        }
+
+            dialog::backdrop {
+                background: rgba(9,25,39,.58);
+                backdrop-filter: blur(2px);
+            }
+
+        .dialog-head {
+            padding: 20px 22px 15px;
+            border-bottom: 1px solid var(--line);
+        }
+
+            .dialog-head h2 {
+                margin: 0;
+                color: var(--navy);
+                font-size: 1.2rem;
+            }
+
+        .dialog-content {
+            padding: 20px 22px;
+        }
+
+        .dialog-actions {
             display: flex;
             justify-content: flex-end;
-            gap: 0.5rem;
-            padding-top: 0.5rem;
-            border-top: 1px solid var(--border);
+            gap: 9px;
+            margin-top: 20px;
+        }
+
+        @media (max-width:950px) {
+            .body-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-panel {
+                max-width: none;
+            }
+        }
+
+        @media (max-width:650px) {
+            .hero-row {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .api-status {
+                white-space: normal;
+            }
+
+            .shell {
+                padding: 0 12px;
+            }
+
+            .module-body {
+                padding: 13px;
+            }
+
+            details.module-details > summary {
+                padding: 15px;
+            }
+
+            .form-grid,
+            .bridge-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .field.full {
+                grid-column: auto;
+            }
+
+            .intro {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .nav a {
+                font-size: .78rem;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Módulo de Innovación Curricular</h1>
-            <p class="subtitle">Panel de consulta y administración de catálogos institucionales</p>
-        </header>
-
-        <!-- Alerta de Resiliencia -->
-        <div id="alerta-servicio" class="alert alert-warning"></div>
-
-        <section class="controls">
-            <div style="display: flex; gap: 0.8rem; align-items: center;">
-                <label for="selector-recurso" style="font-weight: 500; font-size: 0.9rem;">Recurso:</label>
-                <select id="selector-recurso">
-                    <option value="universidades">Universidades</option>
-                    <option value="areas-conocimiento">Áreas de Conocimiento</option>
-                    <option value="aspectos-normativos">Aspectos Normativos</option>
-                    <option value="practicas-estrategias">Prácticas y Estrategias</option>
-                    <option value="enfoques">Enfoques</option>
-                    <option value="caracteristicas-innovacion">Características de Innovación</option>
-                    <option value="aliados">Aliados</option>
-                </select>
-                <button id="btn-recargar" class="btn-primary" style="padding: 0.6rem 0.8rem;">Refrescar</button>
+    <header class="hero">
+        <div class="hero-row">
+            <div>
+                <p class="eyebrow">Plataforma académica</p>
+                <h1>Gestión de Innovación Curricular</h1>
+                <p class="subtitle">Administra la estructura académica y las entidades asociadas desde una sola interfaz conectada con los servicios de la API.</p>
             </div>
-
-            <button id="btn-nuevo" class="btn-primary">+ Nuevo Registro</button>
-        </section>
-
-        <main class="table-container">
-            <table id="tabla-datos">
-                <thead id="tabla-encabezado"></thead>
-                <tbody id="tabla-cuerpo"></tbody>
-            </table>
-            <div id="estado-vacio" class="empty-state" style="display: none;">
-                No hay registros activos disponibles en este catálogo.
-            </div>
-        </main>
-    </div>
-
-    <!-- Modal para Formulario Dinámico -->
-    <div id="modal-formulario" class="modal-backdrop">
-        <div class="modal">
-            <div class="modal-header">
-                <h3 id="modal-titulo">Nuevo Registro</h3>
-                <button id="btn-cerrar-modal" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--text-color);">✕</button>
-            </div>
-            <form id="form-registro" class="modal-body"></form>
-            <div class="modal-footer">
-                <button type="button" id="btn-cancelar" class="btn-danger" style="color: var(--muted-text); border-color: var(--border);">Cancelar</button>
-                <button type="submit" form="form-registro" class="btn-primary">Guardar</button>
-            </div>
+            <div id="apiStatus" class="api-status"><span class="status-dot"></span><span>Conectando con la API…</span></div>
         </div>
+    </header>
+
+    <div class="shell">
+        <div class="nav-wrap"><nav id="moduleNav" class="nav" aria-label="Navegación de entidades"></nav></div>
+        <div class="intro">
+            <div><h2>Entidades y servicios</h2><p>Abre cada sección para crear registros, consultar la tabla y ejecutar las operaciones disponibles en el servicio correspondiente.</p></div>
+        </div>
+        <main id="moduleContainer"></main>
+        <p class="footer">Los listados muestran los registros que la API entrega como activos. Las acciones de eliminar/inactivar dependen del comportamiento definido por cada servicio.</p>
     </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <dialog id="editDialog">
+        <form id="editForm">
+            <div class="dialog-head"><h2 id="editTitle">Editar registro</h2></div>
+            <div class="dialog-content">
+                <div id="editFields" class="form-grid"></div>
+                <div class="dialog-actions">
+                    <button type="button" id="cancelEdit" class="btn btn-secondary">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" style="flex:0 0 auto">Guardar cambios</button>
+                </div>
+            </div>
+        </form>
+    </dialog>
 
     <script>
-const API_BASE_URL = 'http://localhost:8124/api';
-            let esModificacion = false;
-            let idEditando = null;
+                                    const API_BASE = "http://localhost:8124/api";
 
-            const ESQUEMAS = {
-              'universidades': {
-                singular: 'Universidad',
-                idField: 'id',
-                idType: 'number',
-                campos: [
-                  { name: 'id', label: 'ID', type: 'number', required: true, editable: false },
-                  { name: 'nombre', label: 'Nombre', type: 'text', required: true },
-                  { name: 'tipo', label: 'Tipo', type: 'text', required: true },
-                  { name: 'ciudad', label: 'Ciudad', type: 'text', required: true }
-                ]
-              },
-              'areas-conocimiento': {
-                singular: 'Área de Conocimiento',
-                idField: 'id',
-                idType: 'number',
-                campos: [
-                  { name: 'id', label: 'ID', type: 'number', required: true, editable: false },
-                  { name: 'granArea', label: 'Gran Área', type: 'text', required: true },
-                  { name: 'area', label: 'Área', type: 'text', required: true },
-                  { name: 'disciplina', label: 'Disciplina', type: 'text', required: true }
-                ]
-              },
-              'aspectos-normativos': {
-                singular: 'Aspecto Normativo',
-                idField: 'id',
-                idType: 'number',
-                campos: [
-                  { name: 'id', label: 'ID', type: 'number', required: true, editable: false },
-                  { name: 'tipo', label: 'Tipo', type: 'text', required: true },
-                  { name: 'descripcion', label: 'Descripción', type: 'text', required: true },
-                  { name: 'fuente', label: 'Fuente', type: 'text', required: true }
-                ]
-              },
-              'practicas-estrategias': {
-                singular: 'Práctica / Estrategia',
-                idField: 'id',
-                idType: 'number',
-                campos: [
-                  { name: 'id', label: 'ID', type: 'number', required: true, editable: false },
-                  { name: 'tipo', label: 'Tipo', type: 'text', required: true },
-                  { name: 'nombre', label: 'Nombre', type: 'text', required: true },
-                  { name: 'descripcion', label: 'Descripción', type: 'text', required: true }
-                ]
-              },
-              'enfoques': {
-                singular: 'Enfoque',
-                idField: 'id',
-                idType: 'number',
-                campos: [
-                  { name: 'id', label: 'ID', type: 'number', required: true, editable: false },
-                  { name: 'nombre', label: 'Nombre', type: 'text', required: true },
-                  { name: 'descripcion', label: 'Descripción', type: 'text', required: true }
-                ]
-              },
-              'caracteristicas-innovacion': {
-                singular: 'Car. Innovación',
-                idField: 'id',
-                idType: 'number',
-                campos: [
-                  { name: 'id', label: 'ID', type: 'number', required: true, editable: false },
-                  { name: 'nombre', label: 'Nombre', type: 'text', required: true },
-                  { name: 'descripcion', label: 'Descripción', type: 'text', required: true },
-                  { name: 'tipo', label: 'Tipo', type: 'text', required: true }
-                ]
-              },
-              'aliados': {
-                singular: 'Aliado',
-                idField: 'nit',
-                idType: 'text',
-                campos: [
-                  { name: 'nit', label: 'NIT', type: 'text', required: true, editable: false },
-                  { name: 'razonSocial', label: 'Razón Social', type: 'text', required: true },
-                  { name: 'contacto', label: 'Contacto', type: 'text', required: true },
-                  { name: 'ciudad', label: 'Ciudad', type: 'text', required: true }
-                ]
-              }
-            };
+                                    // Estos módulos siguen las rutas, campos y operaciones que existen en los controladores del proyecto.
+                                    const MODULES = [
+                                      {
+                                        key: "universidades", title: "Universidades", route: "universidades", primaryKey: "id", open: true,
+                                        description: "Instituciones principales; el ID se ingresa manualmente.",
+                                        fields: [
+                                          { key: "id", label: "ID", type: "number", required: true, min: 1 },
+                                          { key: "nombre", label: "Nombre de la universidad", required: true, maxLength: 150 },
+                                          { key: "tipo", label: "Tipo", required: true, maxLength: 50 },
+                                          { key: "ciudad", label: "Ciudad", required: true, maxLength: 100 }
+                                        ],
+                                        columns: [{key:"id",label:"ID"},{key:"nombre",label:"Universidad"},{key:"tipo",label:"Tipo"},{key:"ciudad",label:"Ciudad"},{key:"activo",label:"Estado",kind:"status"}],
+                                        update: { method: "PATCH", fields: ["nombre", "tipo", "ciudad"] }, deleteLabel: "Inactivar"
+                                      },
+                                      {
+                                        key: "facultades", title: "Facultades", route: "facultad", primaryKey: "id", open: true,
+                                        description: "Cada facultad pertenece a una universidad.",
+                                        fields: [
+                                          { key: "nombre", label: "Nombre de la facultad", required: true, maxLength: 200 },
+                                          { key: "universidadId", label: "Universidad", type: "select", source: "universidades", required: true }
+                                        ],
+                                        columns: [{key:"id",label:"ID"},{key:"nombre",label:"Facultad"},{key:"universidadNombre",label:"Universidad"},{key:"activo",label:"Estado",kind:"status"}],
+                                        update: { method: "PUT", fields: ["nombre", "universidadId"] }, deleteLabel: "Inactivar"
+                                      },
+                                      {
+                                        key: "programas", title: "Programas académicos", route: "programa", primaryKey: "id", open: true,
+                                        description: "Cada programa está asociado a una facultad.",
+                                        fields: [
+                                          { key: "nombre", label: "Nombre del programa", required: true, maxLength: 200 },
+                                          { key: "facultadId", label: "Facultad", type: "select", source: "facultades", required: true }
+                                        ],
+                                        columns: [{key:"id",label:"ID"},{key:"nombre",label:"Programa"},{key:"facultadNombre",label:"Facultad"},{key:"activo",label:"Estado",kind:"status"}],
+                                        update: { method: "PUT", fields: ["nombre", "facultadId"] }, deleteLabel: "Inactivar"
+                                      },
+                                      {
+                                        key: "aliados", title: "Aliados", route: "aliados", primaryKey: "nit",
+                                        description: "Organizaciones aliadas vinculadas con actividades de innovación.",
+                                        fields: [
+                                          { key: "nit", label: "NIT", required: true, maxLength: 20 },
+                                          { key: "razonSocial", label: "Razón social", required: true, maxLength: 150 },
+                                          { key: "contacto", label: "Contacto (correo o persona)", required: true, maxLength: 150 },
+                                          { key: "ciudad", label: "Ciudad", required: true, maxLength: 100 }
+                                        ],
+                                        columns: [{key:"nit",label:"NIT"},{key:"razonSocial",label:"Razón social"},{key:"contacto",label:"Contacto"},{key:"ciudad",label:"Ciudad"},{key:"activo",label:"Estado",kind:"status"}],
+                                        update: { method: "PATCH", fields: ["razonSocial", "contacto", "ciudad"] }, deleteLabel: "Inactivar"
+                                      },
+                                      {
+                                        key: "areasConocimiento", title: "Áreas de conocimiento", route: "areas-conocimiento", primaryKey: "id",
+                                        description: "La entidad usa un ID manual, además de gran área, área y disciplina.",
+                                        fields: [
+                                          { key: "id", label: "ID", type: "number", required: true, min: 1 },
+                                          { key: "granArea", label: "Gran área", required: true, maxLength: 150 },
+                                          { key: "area", label: "Área", required: true, maxLength: 150 },
+                                          { key: "disciplina", label: "Disciplina", required: true, maxLength: 150 }
+                                        ],
+                                        columns: [{key:"id",label:"ID"},{key:"granArea",label:"Gran área"},{key:"area",label:"Área"},{key:"disciplina",label:"Disciplina"},{key:"activo",label:"Estado",kind:"status"}],
+                                        update: { method: "PATCH", fields: ["granArea", "area", "disciplina"] }, deleteLabel: "Inactivar"
+                                      },
+                                      {
+                                        key: "aspectosNormativos", title: "Aspectos normativos", route: "aspectos-normativos", primaryKey: "id",
+                                        description: "Normas, lineamientos o fuentes relevantes para los programas.",
+                                        fields: [
+                                          { key: "id", label: "ID", type: "number", required: true, min: 1 },
+                                          { key: "tipo", label: "Tipo", required: true, maxLength: 50 },
+                                          { key: "descripcion", label: "Descripción", type: "textarea", required: true, maxLength: 500 },
+                                          { key: "fuente", label: "Fuente", required: true, maxLength: 200 }
+                                        ],
+                                        columns: [{key:"id",label:"ID"},{key:"tipo",label:"Tipo"},{key:"descripcion",label:"Descripción"},{key:"fuente",label:"Fuente"},{key:"activo",label:"Estado",kind:"status"}],
+                                        update: { method: "PATCH", fields: ["tipo", "descripcion", "fuente"] }, deleteLabel: "Inactivar"
+                                      },
+                                      {
+                                        key: "practicasEstrategias", title: "Prácticas y estrategias", route: "practicas-estrategias", primaryKey: "id",
+                                        description: "Prácticas o estrategias relacionadas con la innovación curricular.",
+                                        fields: [
+                                          { key: "id", label: "ID", type: "number", required: true, min: 1 },
+                                          { key: "tipo", label: "Tipo", required: true, maxLength: 50 },
+                                          { key: "nombre", label: "Nombre", required: true, maxLength: 150 },
+                                          { key: "descripcion", label: "Descripción", type: "textarea", required: true, maxLength: 500 }
+                                        ],
+                                        columns: [{key:"id",label:"ID"},{key:"tipo",label:"Tipo"},{key:"nombre",label:"Nombre"},{key:"descripcion",label:"Descripción"},{key:"activo",label:"Estado",kind:"status"}],
+                                        update: { method: "PATCH", fields: ["tipo", "nombre", "descripcion"] }, deleteLabel: "Inactivar"
+                                      },
+                                      {
+                                        key: "enfoques", title: "Enfoques", route: "enfoques", primaryKey: "id",
+                                        description: "Enfoques metodológicos; el ID se ingresa manualmente.",
+                                        fields: [
+                                          { key: "id", label: "ID", type: "number", required: true, min: 1 },
+                                          { key: "nombre", label: "Nombre", required: true, maxLength: 150 },
+                                          { key: "descripcion", label: "Descripción", type: "textarea", required: true, maxLength: 500 }
+                                        ],
+                                        columns: [{key:"id",label:"ID"},{key:"nombre",label:"Nombre"},{key:"descripcion",label:"Descripción"},{key:"activo",label:"Estado",kind:"status"}],
+                                        update: { method: "PATCH", fields: ["nombre", "descripcion"] }, deleteLabel: "Inactivar"
+                                      },
+                                      {
+                                        key: "caracteristicasInnovacion", title: "Características de innovación", route: "caracteristicas-innovacion", primaryKey: "id",
+                                        description: "Características que describen la innovación curricular.",
+                                        fields: [
+                                          { key: "id", label: "ID", type: "number", required: true, min: 1 },
+                                          { key: "nombre", label: "Nombre", required: true, maxLength: 150 },
+                                          { key: "descripcion", label: "Descripción", type: "textarea", required: true, maxLength: 500 },
+                                          { key: "tipo", label: "Tipo", required: true, maxLength: 50 }
+                                        ],
+                                        columns: [{key:"id",label:"ID"},{key:"nombre",label:"Nombre"},{key:"descripcion",label:"Descripción"},{key:"tipo",label:"Tipo"},{key:"activo",label:"Estado",kind:"status"}],
+                                        update: { method: "PATCH", fields: ["nombre", "descripcion", "tipo"] }, deleteLabel: "Inactivar"
+                                      },
+                                      {
+                                        key: "acreditaciones", title: "Acreditaciones", route: "acreditacion", primaryKey: "resolucion",
+                                        description: "Acreditaciones asociadas a un programa académico.",
+                                        fields: [
+                                          { key: "resolucion", label: "Resolución", required: true, maxLength: 100 },
+                                          { key: "tipo", label: "Tipo de acreditación", required: true, maxLength: 100 },
+                                          { key: "calificacion", label: "Calificación", nullable: true, maxLength: 50 },
+                                          { key: "fechaInicio", label: "Fecha de inicio", type: "date", nullable: true },
+                                          { key: "fechaFin", label: "Fecha de fin", type: "date", nullable: true },
+                                          { key: "programaId", label: "Programa académico", type: "select", source: "programas", required: true }
+                                        ],
+                                        columns: [{key:"resolucion",label:"Resolución"},{key:"tipo",label:"Tipo"},{key:"calificacion",label:"Calificación"},{key:"fechaInicio",label:"Inicio",kind:"date"},{key:"fechaFin",label:"Fin",kind:"date"},{key:"programaNombre",label:"Programa"},{key:"activo",label:"Estado",kind:"status"}],
+                                        update: { method: "PUT", fields: ["tipo", "calificacion", "fechaInicio", "fechaFin", "programaId"] }, deleteLabel: "Inactivar"
+                                      },
+                                      {
+                                        key: "registrosCalificados", title: "Registros calificados", route: "registro-calificado", primaryKey: "codigo",
+                                        description: "Registro calificado, créditos, horas, metodología y titulación por programa.",
+                                        fields: [
+                                          { key: "codigo", label: "Código", required: true, maxLength: 100 },
+                                          { key: "creditos", label: "Créditos", type: "number", required: true, min: 0 },
+                                          { key: "horas", label: "Horas", type: "number", required: true, min: 0 },
+                                          { key: "metodologia", label: "Metodología", nullable: true, maxLength: 100 },
+                                          { key: "duracion", label: "Duración", nullable: true, maxLength: 50 },
+                                          { key: "titulacion", label: "Titulación", nullable: true, maxLength: 200 },
+                                          { key: "programaId", label: "Programa académico", type: "select", source: "programas", required: true }
+                                        ],
+                                        columns: [{key:"codigo",label:"Código"},{key:"creditos",label:"Créditos"},{key:"horas",label:"Horas"},{key:"metodologia",label:"Metodología"},{key:"duracion",label:"Duración"},{key:"titulacion",label:"Titulación"},{key:"programaNombre",label:"Programa"},{key:"activo",label:"Estado",kind:"status"}],
+                                        update: { method: "PUT", fields: ["creditos", "horas", "metodologia", "duracion", "titulacion", "programaId"] }, deleteLabel: "Inactivar"
+                                      },
+                                      {
+                                        key: "actividadesAcademicas", title: "Actividades académicas", route: "activ-academica", primaryKey: "id",
+                                        description: "Cursos o actividades académicas con créditos, horas, idioma y programa.",
+                                        fields: [
+                                          { key: "nombre", label: "Nombre de la actividad", required: true, maxLength: 200 },
+                                          { key: "creditos", label: "Créditos", type: "number", required: true, min: 0 },
+                                          { key: "horas", label: "Horas", type: "number", required: true, min: 0 },
+                                          { key: "idioma", label: "Idioma", required: true, maxLength: 50, defaultValue: "Español" },
+                                          { key: "esEspejo", label: "Es actividad espejo", type: "checkbox", defaultValue: false },
+                                          { key: "programaId", label: "Programa académico", type: "select", source: "programas", required: true }
+                                        ],
+                                        columns: [{key:"id",label:"ID"},{key:"nombre",label:"Actividad"},{key:"creditos",label:"Créditos"},{key:"horas",label:"Horas"},{key:"idioma",label:"Idioma"},{key:"esEspejo",label:"Espejo",kind:"yesno"},{key:"programaNombre",label:"Programa"},{key:"activo",label:"Estado",kind:"status"}],
+                                        update: { method: "PUT", fields: ["nombre", "creditos", "horas", "idioma", "esEspejo", "programaId"] }, deleteLabel: "Inactivar"
+                                      },
+                                      {
+                                        key: "alianzas", title: "Alianzas", route: "alianza", primaryKey: "id",
+                                        description: "Relaciona una organización aliada con un programa académico.",
+                                        fields: [
+                                          { key: "aliadoNit", label: "Aliado", type: "select", source: "aliados", valueKey: "nit", valueType: "string", required: true },
+                                          { key: "programaId", label: "Programa académico", type: "select", source: "programas", required: true },
+                                          { key: "docenteResponsable", label: "Docente responsable", nullable: true, maxLength: 200 },
+                                          { key: "fechaInicio", label: "Fecha de inicio", type: "date", nullable: true },
+                                          { key: "fechaFin", label: "Fecha de fin", type: "date", nullable: true }
+                                        ],
+                                        columns: [{key:"id",label:"ID"},{key:"aliadoNombre",label:"Aliado"},{key:"programaNombre",label:"Programa"},{key:"docenteResponsable",label:"Docente responsable"},{key:"fechaInicio",label:"Inicio",kind:"date"},{key:"fechaFin",label:"Fin",kind:"date"},{key:"activo",label:"Estado",kind:"status"}],
+                                        update: { method: "PUT", fields: ["aliadoNit", "programaId", "docenteResponsable", "fechaInicio", "fechaFin"] }, deleteLabel: "Retirar alianza"
+                                      },
+                                      {
+                                        key: "docentesDepartamento", title: "Docente–Departamento", route: "docente-departamento", primaryKey: "id",
+                                        description: "Registra dedicación y modalidad de docentes asociados a programas.",
+                                        fields: [
+                                          { key: "docenteNombre", label: "Nombre del docente", required: true, maxLength: 200 },
+                                          { key: "dedicacion", label: "Dedicación", nullable: true, maxLength: 100 },
+                                          { key: "modalidad", label: "Modalidad", nullable: true, maxLength: 100 },
+                                          { key: "fechaInicio", label: "Fecha de inicio", type: "date", nullable: true },
+                                          { key: "fechaFin", label: "Fecha de fin", type: "date", nullable: true },
+                                          { key: "programaId", label: "Programa académico", type: "select", source: "programas", required: true }
+                                        ],
+                                        columns: [{key:"id",label:"ID"},{key:"docenteNombre",label:"Docente"},{key:"dedicacion",label:"Dedicación"},{key:"modalidad",label:"Modalidad"},{key:"fechaInicio",label:"Inicio",kind:"date"},{key:"fechaFin",label:"Fin",kind:"date"},{key:"programaNombre",label:"Programa"},{key:"activo",label:"Estado",kind:"status"}],
+                                        update: { method: "PUT", fields: ["docenteNombre", "dedicacion", "modalidad", "fechaInicio", "fechaFin", "programaId"] }, deleteLabel: "Inactivar"
+                                      },
+                                      {
+                                        key: "pasantias", title: "Pasantías", route: "pasantia", primaryKey: "id",
+                                        description: "Administra las pasantías asociadas con programas académicos.",
+                                        fields: [
+                                          { key: "nombre", label: "Nombre de la pasantía", required: true, maxLength: 200 },
+                                          { key: "descripcion", label: "Descripción", type: "textarea", nullable: true, maxLength: 1000 },
+                                          { key: "programaId", label: "Programa académico", type: "select", source: "programas", required: true }
+                                        ],
+                                        columns: [{key:"id",label:"ID"},{key:"nombre",label:"Pasantía"},{key:"descripcion",label:"Descripción"},{key:"programaNombre",label:"Programa"},{key:"activo",label:"Estado",kind:"status"}],
+                                        update: { method: "PUT", fields: ["nombre", "descripcion", "programaId"] }, deleteLabel: "Inactivar"
+                                      },
+                                      {
+                                        key: "premios", title: "Premios", route: "premio", primaryKey: "id",
+                                        description: "Registra reconocimientos recibidos por programas académicos.",
+                                        fields: [
+                                          { key: "nombre", label: "Nombre del premio", required: true, maxLength: 200 },
+                                          { key: "entidadOtorgante", label: "Entidad otorgante", required: true, maxLength: 200 },
+                                          { key: "fechaOtorgamiento", label: "Fecha de otorgamiento", type: "date", nullable: true },
+                                          { key: "programaId", label: "Programa académico", type: "select", source: "programas", required: true }
+                                        ],
+                                        columns: [{key:"id",label:"ID"},{key:"nombre",label:"Premio"},{key:"entidadOtorgante",label:"Entidad otorgante"},{key:"fechaOtorgamiento",label:"Fecha",kind:"date"},{key:"programaNombre",label:"Programa"},{key:"activo",label:"Estado",kind:"status"}],
+                                        update: { method: "PUT", fields: ["nombre", "entidadOtorgante", "fechaOtorgamiento", "programaId"] }, deleteLabel: "Inactivar"
+                                      }
+                                    ];
 
-            const selectorRecurso = document.getElementById('selector-recurso');
-            const btnRecargar = document.getElementById('btn-recargar');
-            const btnNuevo = document.getElementById('btn-nuevo');
-            const alertaServicio = document.getElementById('alerta-servicio');
-            const tablaEncabezado = document.getElementById('tabla-encabezado');
-            const tablaCuerpo = document.getElementById('tabla-cuerpo');
-            const estadoVacio = document.getElementById('estado-vacio');
-            const modalFormulario = document.getElementById('modal-formulario');
-            const modalTitulo = document.getElementById('modal-titulo');
-            const formRegistro = document.getElementById('form-registro');
-            const btnCerrarModal = document.getElementById('btn-cerrar-modal');
-            const btnCancelar = document.getElementById('btn-cancelar');
+                                    // Relaciones de tablas puente: la API permite asignar y retirar, pero no expone un listado GET de estas relaciones.
+                                    const RELATIONSHIPS = [
+                                      {
+                                        key: "programaAreas", title: "Programa ↔ Área de conocimiento",
+                                        description: "Asigna o retira un área de conocimiento de un programa.", route: "puente/programa-ac",
+                                        fields: [
+                                          { key: "idPadre", label: "Programa", type: "select", source: "programas", required: true },
+                                          { key: "idHijo", label: "Área de conocimiento", type: "select", source: "areasConocimiento", required: true }
+                                        ]
+                                      },
+                                      {
+                                        key: "programaEstrategias", title: "Programa ↔ Práctica/Estrategia",
+                                        description: "Asigna o retira una práctica o estrategia de un programa.", route: "puente/programa-pe",
+                                        fields: [
+                                          { key: "idPadre", label: "Programa", type: "select", source: "programas", required: true },
+                                          { key: "idHijo", label: "Práctica/Estrategia", type: "select", source: "practicasEstrategias", required: true }
+                                        ]
+                                      },
+                                      {
+                                        key: "programaInnovacion", title: "Programa ↔ Característica de innovación",
+                                        description: "Asigna o retira una característica de innovación de un programa.", route: "puente/programa-ci",
+                                        fields: [
+                                          { key: "idPadre", label: "Programa", type: "select", source: "programas", required: true },
+                                          { key: "idHijo", label: "Característica de innovación", type: "select", source: "caracteristicasInnovacion", required: true }
+                                        ]
+                                      },
+                                      {
+                                        key: "aspectoPrograma", title: "Aspecto normativo ↔ Programa",
+                                        description: "Asigna o retira un aspecto normativo de un programa.", route: "puente/an-programa",
+                                        fields: [
+                                          { key: "idPadre", label: "Aspecto normativo", type: "select", source: "aspectosNormativos", required: true },
+                                          { key: "idHijo", label: "Programa", type: "select", source: "programas", required: true }
+                                        ]
+                                      },
+                                      {
+                                        key: "enfoqueRegistroCalificado", title: "Enfoque ↔ Registro calificado",
+                                        description: "Asigna o retira un enfoque metodológico de un registro calificado.", route: "puente/enfoque-rc",
+                                        fields: [
+                                          { key: "enfoqueId", label: "Enfoque", type: "select", source: "enfoques", required: true },
+                                          { key: "registroCalificadoCodigo", label: "Registro calificado", type: "select", source: "registrosCalificados", valueKey: "codigo", valueType: "string", required: true }
+                                        ]
+                                      },
+                                      {
+                                        key: "actividadRegistroCalificado", title: "Actividad académica ↔ Registro calificado",
+                                        description: "Relaciona una actividad académica con un registro calificado e incluye el componente y semestre opcionales.", route: "puente/aa-rc",
+                                        removeFields: ["activAcademicaId", "registroCalificadoCodigo"],
+                                        fields: [
+                                          { key: "activAcademicaId", label: "Actividad académica", type: "select", source: "actividadesAcademicas", required: true },
+                                          { key: "registroCalificadoCodigo", label: "Registro calificado", type: "select", source: "registrosCalificados", valueKey: "codigo", valueType: "string", required: true },
+                                          { key: "componente", label: "Componente (opcional)", nullable: true, maxLength: 100 },
+                                          { key: "semestre", label: "Semestre (opcional)", type: "number", nullable: true, min: 1 }
+                                        ]
+                                      }
+                                    ];
 
-            function mostrarAlerta(mensaje, esError = false) {
-              alertaServicio.textContent = mensaje;
-              alertaServicio.className = `alert ${esError ? 'alert-error' : 'alert-warning'}`;
-              alertaServicio.style.display = 'block';
-            }
+                                    const cache = Object.create(null);
+                                    const loadErrors = Object.create(null);
+                                    let currentEdit = null;
+                                    let toastTimer = null;
 
-            function ocultarAlerta() {
-              alertaServicio.style.display = 'none';
-            }
+                                    function escapeHtml(value) {
+                                      return String(value ?? "").replace(/[&<>"']/g, char => ({
+                                        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+                                      })[char]);
+                                    }
 
-            async function cargarDatos() {
-              ocultarAlerta();
-              const recurso = selectorRecurso.value;
-              const esquema = ESQUEMAS[recurso];
+                                    function fieldMap(module) {
+                                      return Object.fromEntries(module.fields.map(field => [field.key, field]));
+                                    }
 
-              try {
-                const respuesta = await fetch(`${API_BASE_URL}/${recurso}`);
+                                    function getField(module, key) {
+                                      return fieldMap(module)[key] || { key, label: key };
+                                    }
 
-                if (respuesta.status === 204) {
-                  renderizarTabla(esquema, []);
-                  return;
-                }
+                                    function renderField(module, field, prefix = "") {
+                                      const id = `${prefix}${module.key}-${field.key}`;
+                                      const required = field.required ? "required" : "";
+                                      const maxLength = field.maxLength ? `maxlength="${field.maxLength}"` : "";
+                                      const min = field.min !== undefined ? `min="${field.min}"` : "";
+                                      const defaultValue = field.defaultValue !== undefined ? `value="${escapeHtml(field.defaultValue)}"` : "";
+                                      if (field.type === "checkbox") {
+                                        const checked = field.defaultValue ? "checked" : "";
+                                        return `<div class="field full"><label class="check-field" for="${id}"><input id="${id}" name="${field.key}" type="checkbox" ${checked}><span>${escapeHtml(field.label)}</span></label></div>`;
+                                      }
+                                      let control = "";
+                                      if (field.type === "select") {
+                                        const valueKey = field.valueKey || "id";
+                                        control = `<select id="${id}" name="${field.key}" data-source="${field.source}" data-value-key="${valueKey}" ${required}><option value="">-- Selecciona una opción --</option></select>`;
+                                      } else if (field.type === "textarea") {
+                                        control = `<textarea id="${id}" name="${field.key}" ${required} ${maxLength} placeholder="Escribe ${escapeHtml(field.label.toLowerCase())}"></textarea>`;
+                                      } else {
+                                        const type = field.type || "text";
+                                        control = `<input id="${id}" name="${field.key}" type="${type}" ${required} ${maxLength} ${min} ${defaultValue} placeholder="${escapeHtml(field.placeholder || field.label)}">`;
+                                      }
+                                      return `<div class="field ${field.type === "textarea" ? "full" : ""}"><label for="${id}">${escapeHtml(field.label)}${field.required ? " *" : ""}</label>${control}</div>`;
+                                    }
 
-                if (!respuesta.ok) {
-                  throw new Error(`El servidor respondió con código HTTP ${respuesta.status}`);
-                }
+                                    function renderModule(module) {
+                                      const columns = module.columns.map(column => `<th>${escapeHtml(column.label)}</th>`).join("") + "<th>Acciones</th>";
+                                      const initialOpen = module.open ? "open" : "";
+                                      return `
+                                        <section class="module" id="sec-${module.key}">
+                                          <details class="module-details" ${initialOpen}>
+                                            <summary>
+                                              <span><span class="summary-title">${escapeHtml(module.title)}</span><span class="summary-description">${escapeHtml(module.description)}</span></span>
+                                              <span id="count-${module.key}" class="count">Cargando…</span>
+                                            </summary>
+                                            <div class="module-body">
+                                              <div class="body-grid">
+                                                <div class="form-panel">
+                                                  <h3>Crear registro</h3>
+                                                  <p class="form-help">Los campos con * son obligatorios.</p>
+                                                  <form id="create-${module.key}" data-module="${module.key}">
+                                                    <div class="form-grid">${module.fields.map(field => renderField(module, field)).join("")}</div>
+                                                    <div class="form-actions"><button class="btn btn-primary" type="submit">Guardar registro</button><button class="btn btn-secondary" type="reset">Limpiar</button></div>
+                                                  </form>
+                                                </div>
+                                                <div class="table-area">
+                                                  <div class="table-heading"><h3>Registros</h3><span class="table-hint">Datos recibidos desde la API</span></div>
+                                                  <div class="table-wrap"><table id="table-${module.key}"><thead><tr>${columns}</tr></thead><tbody><tr><td class="empty" colspan="${module.columns.length + 1}">Cargando registros…</td></tr></tbody></table></div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </details>
+                                        </section>`;
+                                    }
 
-                const data = await respuesta.json();
-                const lista = data.datos || data;
-                renderizarTabla(esquema, lista);
-              } catch (error) {
-                mostrarAlerta(`Aviso: No se pudo establecer conexión con el backend en ${API_BASE_URL}. Asegúrese de que la API esté encendida.`, true);
-                renderizarTabla(esquema, []);
-              }
-            }
+                                    function renderNavigation() {
+                                      const nav = document.getElementById("moduleNav");
+                                      nav.innerHTML = MODULES.map(module => `<a href="#sec-${module.key}" data-target="sec-${module.key}">${escapeHtml(module.title)}</a>`).join("")
+                                        + `<a href="#sec-relaciones" data-target="sec-relaciones">Relaciones</a>`;
+                                      nav.querySelectorAll("a").forEach(link => link.addEventListener("click", () => {
+                                        const section = document.getElementById(link.dataset.target);
+                                        const details = section?.querySelector("details");
+                                        if (details) details.open = true;
+                                      }));
+                                    }
 
-            function renderizarTabla(esquema, registros) {
-              tablaEncabezado.innerHTML = '';
-              tablaCuerpo.innerHTML = '';
+                                    function renderModules() {
+                                      document.getElementById("moduleContainer").innerHTML = MODULES.map(renderModule).join("") + renderRelationships();
+                                      MODULES.forEach(module => {
+                                        const form = document.getElementById(`create-${module.key}`);
+                                        form.addEventListener("submit", event => createRecord(event, module));
+                                      });
+                                      RELATIONSHIPS.forEach(relation => {
+                                        const form = document.getElementById(`bridge-${relation.key}`);
+                                        form.addEventListener("submit", event => saveRelationship(event, relation, "POST"));
+                                        form.querySelector('[data-action="remove"]').addEventListener("click", () => saveRelationship(null, relation, "DELETE", form));
+                                      });
+                                    }
 
-              const trEncabezado = document.createElement('tr');
-              esquema.campos.forEach(c => {
-                const th = document.createElement('th');
-                th.textContent = c.label;
-                trEncabezado.appendChild(th);
-              });
-              const thEstado = document.createElement('th');
-              thEstado.textContent = 'Estado';
-              trEncabezado.appendChild(thEstado);
+                                    function renderRelationships() {
+                                      const cards = RELATIONSHIPS.map(relation => `
+                                        <article class="bridge-card">
+                                          <h3>${escapeHtml(relation.title)}</h3>
+                                          <p>${escapeHtml(relation.description)}</p>
+                                          <form id="bridge-${relation.key}">
+                                            <div class="form-grid">${relation.fields.map(field => renderField(relation, field, "bridge-")).join("")}</div>
+                                            <div class="form-actions">
+                                              <button class="btn btn-primary" type="submit" data-action="assign">Asignar</button>
+                                              <button class="btn btn-delete" type="button" data-action="remove">Retirar</button>
+                                            </div>
+                                          </form>
+                                        </article>`).join("");
+                                      return `
+                                        <section class="module" id="sec-relaciones">
+                                          <details class="module-details">
+                                            <summary>
+                                              <span><span class="summary-title">Relaciones entre entidades</span><span class="summary-description">Gestiona las relaciones muchos-a-muchos expuestas por la API.</span></span>
+                                              <span class="count">6 relaciones</span>
+                                            </summary>
+                                            <div class="module-body">
+                                              <p class="form-help">Selecciona los dos registros y elige Asignar o Retirar. El backend no expone consultas para listar las relaciones actuales.</p>
+                                              <div class="bridge-grid">${cards}</div>
+                                            </div>
+                                          </details>
+                                        </section>`;
+                                    }
 
-              const thAcciones = document.createElement('th');
-              thAcciones.textContent = 'Acciones';
-              trEncabezado.appendChild(thAcciones);
-              tablaEncabezado.appendChild(trEncabezado);
+                                    function showToast(message, isError = false) {
+                                      const toast = document.getElementById("toast");
+                                      toast.textContent = message;
+                                      toast.className = `toast show ${isError ? "error" : "success"}`;
+                                      clearTimeout(toastTimer);
+                                      toastTimer = setTimeout(() => { toast.className = "toast"; }, 5500);
+                                    }
 
-              if (!registros || registros.length === 0) {
-                estadoVacio.style.display = 'block';
-                return;
-              }
-              estadoVacio.style.display = 'none';
+                                    async function parseResponse(response) {
+                                      const text = await response.text();
+                                      if (!text) return null;
+                                      try { return JSON.parse(text); } catch { return { rawText: text }; }
+                                    }
 
-              registros.forEach(item => {
-                const tr = document.createElement('tr');
-                esquema.campos.forEach(c => {
-                  const td = document.createElement('td');
-                  const val = item[c.name] ?? item[c.name.charAt(0).toUpperCase() + c.name.slice(1)];
-                  td.textContent = val !== undefined && val !== null ? val : '';
-                  tr.appendChild(td);
-                });
+                                    function extractError(body, status) {
+                                      if (!body) return `La API respondió HTTP ${status}.`;
+                                      if (body.mensaje) return body.mensaje;
+                                      if (body.title) return body.title;
+                                      if (body.detail) return body.detail;
+                                      if (body.errors) return Object.values(body.errors).flat().join(" ");
+                                      if (body.rawText) return `HTTP ${status}: ${body.rawText.slice(0, 260)}`;
+                                      return `La API respondió HTTP ${status}: ${JSON.stringify(body).slice(0, 260)}`;
+                                    }
 
-                const tdEstado = document.createElement('td');
-                const badge = document.createElement('span');
-                badge.className = 'status-badge';
-                badge.textContent = 'Activo';
-                tdEstado.appendChild(badge);
-                tr.appendChild(tdEstado);
+                                    async function apiRequest(route, options = {}) {
+                                      let response;
+                                      try {
+                                        response = await fetch(`${API_BASE}/${route}`, options);
+                                      } catch (error) {
+                                        throw new Error(`No se pudo conectar con la API en ${API_BASE}. Comprueba que Docker esté iniciado. ${error.message}`);
+                                      }
+                                      const body = await parseResponse(response);
+                                      if (!response.ok) throw new Error(extractError(body, response.status));
+                                      return body;
+                                    }
 
-                const tdAcciones = document.createElement('td');
-                tdAcciones.className = 'action-buttons';
+                                    function listFromResponse(body) {
+                                      if (Array.isArray(body)) return body;
+                                      if (body && Array.isArray(body.datos)) return body.datos;
+                                      if (body && Array.isArray(body.items)) return body.items;
+                                      return [];
+                                    }
 
-                const idVal = item[esquema.idField] ?? item[esquema.idField.charAt(0).toUpperCase() + esquema.idField.slice(1)];
+                                    async function loadCollection(module) {
+                                      try {
+                                        const response = await fetch(`${API_BASE}/${module.route}`);
+                                        if (response.status === 204) {
+                                          cache[module.key] = [];
+                                          delete loadErrors[module.key];
+                                          return;
+                                        }
+                                        const body = await parseResponse(response);
+                                        if (!response.ok) throw new Error(extractError(body, response.status));
+                                        cache[module.key] = listFromResponse(body);
+                                        delete loadErrors[module.key];
+                                      } catch (error) {
+                                        cache[module.key] = [];
+                                        loadErrors[module.key] = error.message;
+                                      }
+                                    }
 
-                // BOTÓN MODIFICAR
-                const btnEditar = document.createElement('button');
-                btnEditar.className = 'btn-warning';
-                btnEditar.textContent = 'Modificar';
-                btnEditar.onclick = () => abrirModalFormulario(item, true);
+                                    function optionLabel(source, item) {
+                                      if (source === "universidades") return `${item.nombre ?? ""}${item.ciudad ? ` — ${item.ciudad}` : ""}`;
+                                      if (source === "facultades") return `${item.nombre ?? ""}${item.universidadNombre ? ` — ${item.universidadNombre}` : ""}`;
+                                      if (source === "programas") return `${item.nombre ?? ""}${item.facultadNombre ? ` — ${item.facultadNombre}` : ""}`;
+                                      if (source === "aliados") return `${item.razonSocial ?? item.nit ?? "Aliado"}${item.ciudad ? ` — ${item.ciudad}` : ""}`;
+                                      if (source === "areasConocimiento") return `${item.granArea ?? ""}${item.area ? ` — ${item.area}` : ""}${item.disciplina ? ` — ${item.disciplina}` : ""}`;
+                                      if (source === "aspectosNormativos") return `${item.tipo ?? "Aspecto normativo"}${item.descripcion ? ` — ${item.descripcion}` : ""}`;
+                                      if (source === "registrosCalificados") return `${item.codigo ?? "Registro calificado"}${item.programaNombre ? ` — ${item.programaNombre}` : ""}`;
+                                      if (source === "actividadesAcademicas") return `${item.nombre ?? "Actividad académica"}${item.programaNombre ? ` — ${item.programaNombre}` : ""}`;
+                                      if (source === "enfoques") return `${item.nombre ?? item.id ?? "Enfoque"}`;
+                                      return item.nombre ?? item.id ?? item.codigo ?? "Registro";
+                                    }
 
-                // BOTÓN INACTIVAR / ELIMINAR
-                const btnEliminar = document.createElement('button');
-                btnEliminar.className = 'btn-danger';
-                btnEliminar.textContent = 'Inactivar';
-                btnEliminar.onclick = () => inactivarRegistro(selectorRecurso.value, idVal);
+                                    function populateSelects(container = document) {
+                                      container.querySelectorAll("select[data-source]").forEach(select => {
+                                        const source = select.dataset.source;
+                                        const currentValue = select.value;
+                                        const items = cache[source] || [];
+                                        select.innerHTML = "";
+                                        const first = document.createElement("option");
+                                        first.value = "";
+                                        first.textContent = items.length ? "-- Selecciona una opción --" : "No hay opciones disponibles";
+                                        select.appendChild(first);
+                                        const valueKey = select.dataset.valueKey || "id";
+                                        items.forEach(item => {
+                                          const option = document.createElement("option");
+                                          option.value = item[valueKey] ?? "";
+                                          option.textContent = optionLabel(source, item);
+                                          select.appendChild(option);
+                                        });
+                                        if ([...select.options].some(option => option.value === currentValue)) select.value = currentValue;
+                                      });
+                                    }
 
-                tdAcciones.appendChild(btnEditar);
-                tdAcciones.appendChild(btnEliminar);
-                tr.appendChild(tdAcciones);
+                                    function cellText(record, column) {
+                                      let value = record[column.key];
+                                      if (value === null || value === undefined || value === "") return "—";
+                                      if (column.kind === "date") return String(value).split("T")[0];
+                                      if (column.kind === "status") return value ? "Activo" : "Inactivo";
+                                      if (column.kind === "yesno") return value ? "Sí" : "No";
+                                      return String(value);
+                                    }
 
-                tablaCuerpo.appendChild(tr);
-              });
-            }
+                                    function renderTable(module) {
+                                      const table = document.getElementById(`table-${module.key}`);
+                                      if (!table) return;
+                                      const tbody = table.querySelector("tbody");
+                                      tbody.replaceChildren();
+                                      const items = cache[module.key] || [];
+                                      const count = document.getElementById(`count-${module.key}`);
+                                      if (count) count.textContent = loadErrors[module.key] ? "Error" : `${items.length} registro${items.length === 1 ? "" : "s"}`;
 
-            async function inactivarRegistro(recurso, id) {
-              if (!confirm(`¿Está seguro de inactivar el registro con identificador ${id}?`)) return;
+                                      if (loadErrors[module.key]) {
+                                        const tr = document.createElement("tr");
+                                        const td = document.createElement("td");
+                                        td.className = "load-error";
+                                        td.colSpan = module.columns.length + 1;
+                                        td.textContent = `No se pudo cargar: ${loadErrors[module.key]}`;
+                                        tr.appendChild(td);
+                                        tbody.appendChild(tr);
+                                        return;
+                                      }
+                                      if (!items.length) {
+                                        const tr = document.createElement("tr");
+                                        const td = document.createElement("td");
+                                        td.className = "empty";
+                                        td.colSpan = module.columns.length + 1;
+                                        td.textContent = "No hay registros activos para mostrar.";
+                                        tr.appendChild(td);
+                                        tbody.appendChild(tr);
+                                        return;
+                                      }
 
-              try {
-                const respuesta = await fetch(`${API_BASE_URL}/${recurso}/${id}`, {
-                  method: 'DELETE'
-                });
+                                      items.forEach(record => {
+                                        const tr = document.createElement("tr");
+                                        module.columns.forEach(column => {
+                                          const td = document.createElement("td");
+                                          const text = cellText(record, column);
+                                          if (column.kind === "status") {
+                                            const pill = document.createElement("span");
+                                            pill.className = `pill ${record[column.key] ? "" : "off"}`;
+                                            pill.textContent = text;
+                                            td.appendChild(pill);
+                                          } else {
+                                            td.textContent = text;
+                                          }
+                                          tr.appendChild(td);
+                                        });
 
-                if (!respuesta.ok) {
-                  throw new Error('Error al procesar el borrado lógico.');
-                }
+                                        const actions = document.createElement("td");
+                                        const actionGroup = document.createElement("div");
+                                        actionGroup.className = "actions";
+                                        if (module.update) {
+                                          const editButton = document.createElement("button");
+                                          editButton.type = "button";
+                                          editButton.className = "btn btn-small btn-edit";
+                                          editButton.textContent = "Editar";
+                                          editButton.addEventListener("click", () => openEdit(module, record));
+                                          actionGroup.appendChild(editButton);
+                                        }
+                                        if (module.deleteLabel) {
+                                          const deleteButton = document.createElement("button");
+                                          deleteButton.type = "button";
+                                          deleteButton.className = "btn btn-small btn-delete";
+                                          deleteButton.textContent = module.deleteLabel;
+                                          deleteButton.addEventListener("click", () => deactivateRecord(module, record));
+                                          actionGroup.appendChild(deleteButton);
+                                        }
+                                        if (!module.update && !module.deleteLabel) actionGroup.textContent = "—";
+                                        actions.appendChild(actionGroup);
+                                        tr.appendChild(actions);
+                                        tbody.appendChild(tr);
+                                      });
+                                    }
 
-                await cargarDatos();
-              } catch (error) {
-                mostrarAlerta(`No se pudo inactivar el registro: ${error.message}`, true);
-              }
-            }
+                                    function readPayload(form, fields) {
+                                      const payload = {};
+                                      fields.forEach(field => {
+                                        const control = form.elements.namedItem(field.key);
+                                        if (!control) return;
+                                        if (field.type === "checkbox") {
+                                          payload[field.key] = control.checked;
+                                          return;
+                                        }
+                                        const raw = control.value;
+                                        if (field.type === "number") {
+                                          payload[field.key] = raw === "" ? (field.nullable ? null : null) : Number(raw);
+                                        } else if (field.type === "date") {
+                                          payload[field.key] = raw || null;
+                                        } else if (field.type === "select") {
+                                          payload[field.key] = raw === "" ? null : (field.valueType === "string" ? raw : Number(raw));
+                                        } else {
+                                          const value = raw.trim();
+                                          payload[field.key] = field.nullable && value === "" ? null : value;
+                                        }
+                                      });
+                                      return payload;
+                                    }
 
-            function abrirModalFormulario(datos = null, editar = false) {
-              esModificacion = editar;
-              const recurso = selectorRecurso.value;
-              const esquema = ESQUEMAS[recurso];
+                                    async function createRecord(event, module) {
+                                      event.preventDefault();
+                                      const form = event.currentTarget;
+                                      const payload = readPayload(form, module.fields);
+                                      try {
+                                        await apiRequest(module.route, {
+                                          method: "POST",
+                                          headers: { "Content-Type": "application/json" },
+                                          body: JSON.stringify(payload)
+                                        });
+                                        form.reset();
+                                        showToast(`${module.title}: registro creado correctamente.`);
+                                        await refreshAll();
+                                      } catch (error) {
+                                        console.error(`Error creando ${module.title}:`, error);
+                                        showToast(`No se pudo crear en ${module.title}. ${error.message}`, true);
+                                      }
+                                    }
 
-              modalTitulo.textContent = editar ? `Modificar — ${esquema.singular}` : `Nuevo — ${esquema.singular}`;
-              formRegistro.innerHTML = '';
+                                    function openEdit(module, record) {
+                                      if (!module.update) return;
+                                      currentEdit = { module, record };
+                                      const fields = module.update.fields.map(key => getField(module, key));
+                                      document.getElementById("editTitle").textContent = `Editar: ${module.title}`;
+                                      const editFields = document.getElementById("editFields");
+                                      editFields.innerHTML = fields.map(field => renderField(module, field, "edit-")).join("");
+                                      populateSelects(editFields);
+                                      fields.forEach(field => {
+                                        const control = document.getElementById(`edit-${module.key}-${field.key}`);
+                                        const value = record[field.key];
+                                        if (!control) return;
+                                        if (field.type === "checkbox") control.checked = Boolean(value);
+                                        else if (field.type === "date") control.value = value ? String(value).slice(0, 10) : "";
+                                        else control.value = value ?? "";
+                                      });
+                                      const dialog = document.getElementById("editDialog");
+                                      if (typeof dialog.showModal === "function") dialog.showModal();
+                                      else dialog.setAttribute("open", "open");
+                                    }
 
-              const idCampoNombre = esquema.idField;
-              idEditando = datos ? (datos[idCampoNombre] ?? datos[idCampoNombre.charAt(0).toUpperCase() + idCampoNombre.slice(1)]) : null;
+                                    document.getElementById("editForm").addEventListener("submit", async event => {
+                                      event.preventDefault();
+                                      if (!currentEdit) return;
+                                      const { module, record } = currentEdit;
+                                      const fields = module.update.fields.map(key => getField(module, key));
+                                      const payload = readPayload(event.currentTarget, fields);
+                                      const key = encodeURIComponent(record[module.primaryKey]);
+                                      try {
+                                        await apiRequest(`${module.route}/${key}`, {
+                                          method: module.update.method,
+                                          headers: { "Content-Type": "application/json" },
+                                          body: JSON.stringify(payload)
+                                        });
+                                        document.getElementById("editDialog").close();
+                                        currentEdit = null;
+                                        showToast(`${module.title}: registro actualizado correctamente.`);
+                                        await refreshAll();
+                                      } catch (error) {
+                                        console.error(`Error actualizando ${module.title}:`, error);
+                                        showToast(`No se pudo actualizar. ${error.message}`, true);
+                                      }
+                                    });
 
-              esquema.campos.forEach(c => {
-                const div = document.createElement('div');
-                div.className = 'form-group';
-                const label = document.createElement('label');
-                label.textContent = c.label;
-                const input = document.createElement('input');
-                input.type = c.type;
-                input.name = c.name;
-                input.required = c.required;
+                                    document.getElementById("cancelEdit").addEventListener("click", () => {
+                                      document.getElementById("editDialog").close();
+                                      currentEdit = null;
+                                    });
 
-                if (datos) {
-                  const val = datos[c.name] ?? datos[c.name.charAt(0).toUpperCase() + c.name.slice(1)];
-                  input.value = val !== undefined && val !== null ? val : '';
-                }
+                                    async function deactivateRecord(module, record) {
+                                      const keyValue = record[module.primaryKey];
+                                      const confirmation = module.deleteLabel === "Retirar alianza"
+                                        ? `¿Deseas retirar la alianza "${keyValue}"?`
+                                        : `¿Deseas inactivar el registro "${keyValue}" de ${module.title}?`;
+                                      if (!confirm(confirmation)) return;
+                                      const key = encodeURIComponent(keyValue);
+                                      try {
+                                        await apiRequest(`${module.route}/${key}`, { method: "DELETE" });
+                                        showToast(`${module.title}: operación completada.`);
+                                        await refreshAll();
+                                      } catch (error) {
+                                        console.error(`Error inactivando ${module.title}:`, error);
+                                        showToast(`No se pudo inactivar el registro. ${error.message}`, true);
+                                      }
+                                    }
 
-                // Si es modificacion y es la clave primaria, deshabilita la edición del ID
-                if (editar && c.name === esquema.idField) {
-                  input.readOnly = true;
-                  input.style.opacity = '0.6';
-                }
+                                    async function saveRelationship(event, relation, method, suppliedForm = null) {
+                                      if (event) event.preventDefault();
+                                      const form = suppliedForm || event?.currentTarget;
+                                      if (!form) return;
+                                      const formPayload = readPayload(form, relation.fields);
+                                      const missingField = relation.fields.find(field => field.required && (
+                                        formPayload[field.key] === null || formPayload[field.key] === undefined || formPayload[field.key] === ""
+                                      ));
+                                      if (missingField) {
+                                        showToast(`Selecciona o completa el campo "${missingField.label}".`, true);
+                                        return;
+                                      }
+                                      // Algunas relaciones tienen metadatos adicionales al asignarse; para retirarlas basta con las dos claves foráneas.
+                                      const payload = method === "DELETE" && relation.removeFields
+                                        ? Object.fromEntries(relation.removeFields.map(key => [key, formPayload[key]]))
+                                        : formPayload;
+                                      const action = method === "DELETE" ? "retirar" : "asignar";
+                                      if (method === "DELETE" && !confirm(`¿Deseas retirar esta relación: ${relation.title}?`)) return;
+                                      try {
+                                        await apiRequest(relation.route, {
+                                          method,
+                                          headers: { "Content-Type": "application/json" },
+                                          body: JSON.stringify(payload)
+                                        });
+                                        showToast(method === "DELETE" ? "Relación retirada correctamente." : "Relación asignada correctamente.");
+                                        if (method === "POST") form.reset();
+                                        populateSelects();
+                                      } catch (error) {
+                                        console.error(`Error al ${action} relación ${relation.title}:`, error);
+                                        showToast(`No se pudo ${action} la relación. ${error.message}`, true);
+                                      }
+                                    }
 
-                div.appendChild(label);
-                div.appendChild(input);
-                formRegistro.appendChild(div);
-              });
+                                    async function refreshAll() {
+                                      await Promise.all(MODULES.map(loadCollection));
+                                      populateSelects();
+                                      MODULES.forEach(renderTable);
+                                      const okCount = MODULES.filter(module => !loadErrors[module.key]).length;
+                                      const status = document.getElementById("apiStatus");
+                                      status.classList.remove("ok", "bad");
+                                      const message = status.querySelector("span:last-child");
+                                      if (okCount === MODULES.length) {
+                                        status.classList.add("ok");
+                                        message.textContent = `API conectada · ${okCount}/${MODULES.length} recursos`;
+                                      } else if (okCount > 0) {
+                                        status.classList.add("ok");
+                                        message.textContent = `API parcial · ${okCount}/${MODULES.length} recursos disponibles`;
+                                      } else {
+                                        status.classList.add("bad");
+                                        message.textContent = "No se pudo consultar la API";
+                                      }
+                                    }
 
-              modalFormulario.style.display = 'flex';
-            }
-
-            function cerrarModal() {
-              modalFormulario.style.display = 'none';
-              formRegistro.reset();
-              esModificacion = false;
-              idEditando = null;
-            }
-
-            formRegistro.onsubmit = async (e) => {
-              e.preventDefault();
-              const recurso = selectorRecurso.value;
-              const esquema = ESQUEMAS[recurso];
-              const formData = new FormData(formRegistro);
-              const payload = {};
-
-              esquema.campos.forEach(c => {
-                const valor = formData.get(c.name);
-                payload[c.name] = c.type === 'number' ? parseInt(valor, 10) : valor;
-              });
-
-              try {
-                const url = esModificacion
-                  ? `${API_BASE_URL}/${recurso}/${idEditando}`
-                  : `${API_BASE_URL}/${recurso}`;
-
-                const metodo = esModificacion ? 'PUT' : 'POST';
-
-                const respuesta = await fetch(url, {
-                  method: metodo,
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify(payload)
-                });
-
-                if (!respuesta.ok) {
-                  const detalle = await respuesta.text();
-                  throw new Error(detalle || `Código HTTP ${respuesta.status}`);
-                }
-
-                cerrarModal();
-                await cargarDatos();
-              } catch (error) {
-                alert(`Error al guardar recurso: ${error.message}`);
-              }
-            };
-
-            selectorRecurso.onchange = cargarDatos;
-            btnRecargar.onclick = cargarDatos;
-            btnNuevo.onclick = () => abrirModalFormulario(null, false);
-            btnCerrarModal.onclick = cerrarModal;
-            btnCancelar.onclick = cerrarModal;
-
-            // Carga inicial
-            cargarDatos();</script>
+                                    renderNavigation();
+                                    renderModules();
+                                    refreshAll();
+    </script>
 </body>
 </html>
